@@ -1,3 +1,5 @@
 # Decentralized Market
 
-Decentralized Market that you can view and swap tokens, And you can also view, publish or buy NFTs.
+Decentralized market where everybody can view token and exchange trends, Swap tokens, View, sell and buy NFTs.
+
+**It's just a DEMO! For practice!!!**
