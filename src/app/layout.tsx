@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import '../styles/globals.css'
+import Header from '@/components/header'
 
 export const metadata: Metadata = {
   title: 'Decentralized Market',
@@ -11,10 +12,13 @@ export default function RootLayout({
 }: PagePropsWithChildren) {
   return (
     <html lang="en">
-      <body
-        className=""
-      >
-        {children}
+      <body className="">
+        <div className="app">
+          <Header />
+          <main>
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   )
