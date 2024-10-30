@@ -38,3 +38,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Foundry ########################
+
+# Compiler files
+contract/cache
+contract/forge-artifacts
+
+# Ignores development broadcast logs
+!contract/broadcast
+contract/broadcast/*/31337/
+contract/broadcast/**/dry-run/
+
+# Docs
+docs/

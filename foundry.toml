@@ -1,0 +1,8 @@
+[profile.default]
+src = "contract/src"
+test = "contract/test"
+out = "contract/forge-artifacts"
+cache_path = "contract/cache"
+broadcast = "contract/broadcast"
+libs = [ "contract/lib" ]
+solc_version = "0.8.28"
