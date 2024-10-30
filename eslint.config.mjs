@@ -13,6 +13,8 @@ export default antfu(
       'node/prefer-global/process': 'off',
       'style/jsx-one-expression-per-line': 'off',
       'react-dom/no-missing-button-type': 'off',
+      '@next/next/no-img-element': 'off',
+      'style/jsx-self-closing-comp': 'warn',
     },
   },
 ).prepend(

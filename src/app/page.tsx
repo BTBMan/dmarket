@@ -7,6 +7,7 @@ export default function RootPage() {
       Root Page
       <Input />
       <Button>Shadcn button</Button>
+      <img src="/logo.svg" />
     </div>
   )
 }
