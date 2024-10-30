@@ -6,11 +6,13 @@ const compat = new FlatCompat()
 export default antfu(
   {
     react: true,
+    ignores: ['src/components/ui'],
   },
   {
     rules: {
       'node/prefer-global/process': 'off',
       'style/jsx-one-expression-per-line': 'off',
+      'react-dom/no-missing-button-type': 'off',
     },
   },
 ).prepend(
