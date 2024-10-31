@@ -10,17 +10,17 @@ export default function Header() {
   const { setTheme } = useTheme()
 
   return (
-    <header>
-      <div className="max-w-[1400px] min-w-[1000px] mx-auto flex items-center justify-between">
-        <div>
-          <div>
+    <header className="border-b-[1px]">
+      <div className="main-content flex items-center justify-between">
+        <div className="flex items-center">
+          <div className="mr-6">
             <Link href="/">
-              <img className="w-[80px]" src="/logo.svg" />
+              <img className="w-[40px] rounded-full border-[1px]" src="/logo.svg" />
             </Link>
           </div>
           <MainNav />
         </div>
-        <div>
+        <div className="space-x-2">
           <Button
             variant="outline"
             size="icon"

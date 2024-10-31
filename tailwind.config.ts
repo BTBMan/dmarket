@@ -57,6 +57,15 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      maxWidth: {
+        main: 'var(--main-max-width)',
+      },
+      minWidth: {
+        main: 'var(--main-min-width)',
+      },
+      padding: {
+        main: 'var(--main-padding)',
+      },
     },
   },
   plugins: [tailwindCSSAnimatePlugin],
