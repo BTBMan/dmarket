@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import '../styles/globals.css'
-import Header from '@/components/header'
-import Providers from '@/components/providers'
+import Header from '@/components/header1'
+import Providers from '@/components/providers1'
 
 export const metadata: Metadata = {
   title: 'Decentralized Market',

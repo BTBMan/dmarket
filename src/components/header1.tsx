@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
 import { useTheme } from 'next-themes'
-import MainNav from './main-nav'
+import MainNav from './main-nav1'
 import { Button } from './ui/button'
 
 export default function Header() {
