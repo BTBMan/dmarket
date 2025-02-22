@@ -83,3 +83,14 @@
     @apply max-w-main min-w-main p-main mx-auto;
   }
 }
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
