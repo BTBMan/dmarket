@@ -26,14 +26,14 @@ export default function MainMenu() {
 
   return (
     <div className="flex items-center space-x-2">
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger className="outline-none">
           <Avatar>
             <AvatarImage src={avatar} />
             <AvatarFallback><PersonIcon className="w-[20px] h-[20px]" /></AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-[200px]">
+        <DropdownMenuContent className="w-[240px]">
           <DropdownMenuLabel>
             <RainbowConnectButton />
           </DropdownMenuLabel>
