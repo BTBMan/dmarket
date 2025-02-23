@@ -76,10 +76,14 @@
     font-family: Inter,-apple-system,BlinkMacSystemFont,segoe ui,Roboto,Helvetica,Arial,sans-serif;
     @apply bg-background text-foreground text-[14px];
   }
+
+  button {
+    @apply block;
+  }
 }
 
 @layer components{
-  .main-content{
+  .main-content {
     @apply max-w-main min-w-main p-main mx-auto;
   }
 }

@@ -1,11 +1,25 @@
-import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
+import { DesktopIcon, MoonIcon, SunIcon } from '@radix-ui/react-icons'
 import { useTheme } from 'next-themes'
-import { Button } from '../ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
 
 export default function MainMenu() {
-  const { setTheme } = useTheme()
+  const { setTheme, theme } = useTheme()
+  const themes = [
+    {
+      key: 'light',
+      icon: <SunIcon />,
+    },
+    {
+      key: 'system',
+      icon: <DesktopIcon />,
+    },
+    {
+      key: 'dark',
+      icon: <MoonIcon />,
+    },
+  ]
 
   return (
     <div className="space-x-2">
@@ -16,33 +30,27 @@ export default function MainMenu() {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className="w-[200px]">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuItem>Subscription</DropdownMenuItem>
+          <DropdownMenuLabel>
+            <Tabs
+              defaultValue={theme}
+              onValueChange={(value) => {
+                setTheme(value)
+              }}
+            >
+              <TabsList className="w-full">
+                {themes.map(theme => (
+                  <TabsTrigger className="flex-1" key={theme.key} value={theme.key}>
+                    {theme.icon}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </DropdownMenuLabel>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => {
-          setTheme('light')
-        }}
-      >
-        <SunIcon />
-      </Button>
-      <Button
-        size="icon"
-        onClick={() => {
-          setTheme('dark')
-        }}
-      >
-        <MoonIcon />
-      </Button>
     </div>
   )
 }
