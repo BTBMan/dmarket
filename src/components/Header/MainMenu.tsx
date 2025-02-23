@@ -1,11 +1,13 @@
-import { DesktopIcon, MoonIcon, SunIcon } from '@radix-ui/react-icons'
+import { DesktopIcon, MoonIcon, PersonIcon, SunIcon } from '@radix-ui/react-icons'
 import { useTheme } from 'next-themes'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
+import RainbowConnectButton from './ConnectButton'
 
 export default function MainMenu() {
+  const avatar = ''
+
   const { setTheme, theme } = useTheme()
   const themes = [
     {
@@ -23,17 +25,18 @@ export default function MainMenu() {
   ]
 
   return (
-    <div className="space-x-2">
-      <ConnectButton />
+    <div className="flex items-center space-x-2">
       <DropdownMenu>
         <DropdownMenuTrigger className="outline-none">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={avatar} />
+            <AvatarFallback><PersonIcon className="w-[20px] h-[20px]" /></AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-[200px]">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            <RainbowConnectButton />
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuLabel>
             <Tabs
