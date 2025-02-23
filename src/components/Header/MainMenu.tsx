@@ -1,5 +1,6 @@
 import { DesktopIcon, MoonIcon, SunIcon } from '@radix-ui/react-icons'
 import { useTheme } from 'next-themes'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
@@ -23,6 +24,7 @@ export default function MainMenu() {
 
   return (
     <div className="space-x-2">
+      <ConnectButton />
       <DropdownMenu>
         <DropdownMenuTrigger className="outline-none">
           <Avatar>
