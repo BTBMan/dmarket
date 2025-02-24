@@ -2,7 +2,6 @@ import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit'
 import type { HTMLAttributes } from 'react'
 import Image from 'next/image'
 import { Button } from '../ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 
 type ButtonContent = Parameters<typeof RainbowConnectButton.Custom>[0]['children']
 type ChildrenProps = Parameters<ButtonContent>[0]
@@ -27,27 +26,17 @@ function AccountInfo({
   account,
   chain,
   onChainClick,
+  onAccountClick,
 }: {
   account: Required<ChildrenProps>['account']
   chain: Required<ChildrenProps>['chain']
   onChainClick?: () => void
+  onAccountClick?: () => void
 }) {
-  // console.log(account, chain)
-
   return (
     <div>
       <div className="flex items-center justify-between">
-        {/* <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="cursor-pointer">{account.displayName}</div>
-            </TooltipTrigger>
-            <TooltipContent>
-              Copy
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider> */}
-        <div className="cursor-pointer">{account.displayName}</div>
+        <div className="cursor-pointer" onClick={onAccountClick}>{account.displayName}</div>
         {chain.hasIcon && (
           <div>
             {chain.iconUrl && (
@@ -77,6 +66,7 @@ export default function ConnectButton() {
     openChainModal,
     openConnectModal,
     mounted,
+    openAccountModal,
   }) => {
     const ready = mounted
     const connected = !!(ready && account && chain)
@@ -103,7 +93,7 @@ export default function ConnectButton() {
               return <ChainButton onClick={openChainModal} />
             }
 
-            return <AccountInfo account={account} chain={chain} onChainClick={openChainModal} />
+            return <AccountInfo account={account} chain={chain} onChainClick={openChainModal} onAccountClick={openAccountModal} />
           })()
         }
       </div>

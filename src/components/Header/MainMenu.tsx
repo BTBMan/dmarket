@@ -1,12 +1,16 @@
 import { DesktopIcon, MoonIcon, PersonIcon, SunIcon } from '@radix-ui/react-icons'
 import { useTheme } from 'next-themes'
+import { useAccount, useEnsAvatar, useEnsName } from 'wagmi'
+import { normalize } from 'viem/ens'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
 import RainbowConnectButton from './ConnectButton'
 
 export default function MainMenu() {
-  const avatar = ''
+  const { address } = useAccount()
+  const { data: ensName } = useEnsName({ address })
+  const { data: ensAvatar } = useEnsAvatar({ name: normalize(ensName || '') })
 
   const { setTheme, theme } = useTheme()
   const themes = [
@@ -29,8 +33,12 @@ export default function MainMenu() {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger className="outline-none">
           <Avatar>
-            <AvatarImage src={avatar} />
-            <AvatarFallback><PersonIcon className="w-[20px] h-[20px]" /></AvatarFallback>
+            <AvatarImage src={ensAvatar || ''} />
+            <AvatarFallback>
+              {address
+                ? <div className="w-full h-full flex items-center justify-center text-[20px] bg-[#FAE388]">🙀</div>
+                : <PersonIcon className="w-[20px] h-[20px]" />}
+            </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-[240px]">
