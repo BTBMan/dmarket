@@ -1,7 +1,9 @@
+import Highlight from '@/components/Highlight'
+
 export default function RootPage() {
   return (
     <div>
-      Root Page
+      <Highlight />
     </div>
   )
 }

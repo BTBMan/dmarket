@@ -2,10 +2,10 @@ import { DesktopIcon, MoonIcon, PersonIcon, SunIcon } from '@radix-ui/react-icon
 import { useTheme } from 'next-themes'
 import { useAccount, useEnsAvatar, useEnsName } from 'wagmi'
 import { normalize } from 'viem/ens'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
-import RainbowConnectButton from './ConnectButton'
+import ConnectButton from './ConnectButton'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function MainMenu() {
   const { address } = useAccount()
@@ -43,7 +43,7 @@ export default function MainMenu() {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-[240px]">
           <DropdownMenuLabel>
-            <RainbowConnectButton />
+            <ConnectButton />
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuLabel>

@@ -1,7 +1,7 @@
 import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit'
 import type { HTMLAttributes } from 'react'
 import Image from 'next/image'
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 
 type ButtonContent = Parameters<typeof RainbowConnectButton.Custom>[0]['children']
 type ChildrenProps = Parameters<ButtonContent>[0]
