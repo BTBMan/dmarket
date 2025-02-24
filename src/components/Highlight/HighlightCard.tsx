@@ -34,7 +34,7 @@ export default function HighlightCard({ title }: { title: string }) {
                 </div>
                 <div className="min-w-[88px] flex flex-col items-end">
                   <div>Graph</div>
-                  <PercentageValue value={10} isUp />
+                  <PercentageValue value={10} isUp={index !== 0} />
                 </div>
               </li>
             ))}
