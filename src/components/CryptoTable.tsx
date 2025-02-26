@@ -1,8 +1,7 @@
-import clsx from 'clsx'
+import PercentageValue from './PercentageValue'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -15,7 +14,7 @@ export default function CryptoTable() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[50px] text-right text-[var(--foreground)]">#</TableHead>
+            <TableHead className="w-[60px] text-right text-[var(--foreground)]">#</TableHead>
             <TableHead className="text-[var(--foreground)]">Name</TableHead>
             <TableHead className="text-right w-[100px] text-[var(--foreground)]">Price</TableHead>
             <TableHead className="text-right w-[100px] text-[var(--foreground)]">1h %</TableHead>
@@ -28,12 +27,44 @@ export default function CryptoTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">INV001</TableCell>
-            <TableCell>Paid</TableCell>
-            <TableCell>Credit Card</TableCell>
-            <TableCell className="text-right">$250.00</TableCell>
-          </TableRow>
+          {Array.from({ length: 10 }).map((_, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <TableRow key={index}>
+              <TableCell className="text-right">
+                <span className="mr-4">⭐</span> 1
+              </TableCell>
+              <TableCell>
+                Img Bitcoin <span>BTC</span>
+              </TableCell>
+              <TableCell className="text-right">$86,732.11</TableCell>
+              <TableCell>
+                <div className="flex items-center justify-end">
+                  <PercentageValue value={10} />
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center justify-end">
+                  <PercentageValue value={10} isUp={false} />
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center justify-end">
+                  <PercentageValue value={10} />
+                </div>
+              </TableCell>
+              <TableCell className="text-right">$1,718,427,973,931</TableCell>
+              <TableCell className="text-right">
+                <div>$1,718,427,973,931</div>
+                <div className="text-[12px]">609.54K BTC</div>
+              </TableCell>
+              <TableCell className="text-right">
+                <div>19.82M BTC</div>
+              </TableCell>
+              <TableCell className="text-right">
+                Graph
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>
