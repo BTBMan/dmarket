@@ -1,3 +1,4 @@
+import Collection from './Collection'
 import PercentageValue from './PercentageValue'
 import {
   Table,
@@ -31,7 +32,10 @@ export default function CryptoTable() {
             // eslint-disable-next-line react/no-array-index-key
             <TableRow key={index}>
               <TableCell className="text-right">
-                <span className="mr-4">⭐</span> 1
+                <div className="flex items-center justify-between">
+                  <Collection />
+                  1
+                </div>
               </TableCell>
               <TableCell>
                 Img Bitcoin <span>BTC</span>
