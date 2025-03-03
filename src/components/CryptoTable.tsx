@@ -33,7 +33,7 @@ export default function CryptoTable() {
             <TableRow key={index}>
               <TableCell className="text-right">
                 <div className="flex items-center justify-between">
-                  <Collection />
+                  <Collection isCollection={false} />
                   1
                 </div>
               </TableCell>
