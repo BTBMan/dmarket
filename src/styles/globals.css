@@ -64,6 +64,9 @@
     --main-max-width: 1400px;
     --main-min-width: 1000px;
     --main-padding: 12px;
+
+    --color-green-500: theme('colors.green.500');
+    --color-red-500: theme('colors.red.500');
   }
 }
 

@@ -6,6 +6,7 @@ import { useState } from 'react'
 import clsx from 'clsx'
 import PercentageValue from '@/components/PercentageValue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import SimpleLineChart from '@/components/SimpleLineChart'
 
 export default function HighlightCard({ title }: { title: string }) {
   const [list] = useState([{ id: 1 }, { id: 2 }, { id: 3 }])
@@ -33,7 +34,18 @@ export default function HighlightCard({ title }: { title: string }) {
                   </div>
                 </div>
                 <div className="min-w-[88px] flex flex-col items-end">
-                  <div>Graph</div>
+                  <SimpleLineChart
+                    className="w-[80%] h-[20px]"
+                    isUp={index !== 0}
+                    data={[
+                      { value: 186 },
+                      { value: 305 },
+                      { value: 237 },
+                      { value: 73 },
+                      { value: 209 },
+                      { value: 214 },
+                    ]}
+                  />
                   <PercentageValue value={10} isUp={index !== 0} />
                 </div>
               </li>

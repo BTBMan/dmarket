@@ -1,5 +1,6 @@
-import Collection from './Collection'
-import PercentageValue from './PercentageValue'
+import Collection from '@/components/Collection'
+import PercentageValue from '@/components/PercentageValue'
+import SimpleLineChart from '@/components/SimpleLineChart'
 import {
   Table,
   TableBody,
@@ -65,7 +66,17 @@ export default function CryptoTable() {
                 <div>19.82M BTC</div>
               </TableCell>
               <TableCell className="text-right">
-                Graph
+                <SimpleLineChart
+                  className="h-[50px]"
+                  data={[
+                    { value: 186 },
+                    { value: 305 },
+                    { value: 237 },
+                    { value: 73 },
+                    { value: 209 },
+                    { value: 214 },
+                  ]}
+                />
               </TableCell>
             </TableRow>
           ))}
