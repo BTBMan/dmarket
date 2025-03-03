@@ -1,3 +1,5 @@
+'use client'
+
 import { DesktopIcon, MoonIcon, PersonIcon, SunIcon } from '@radix-ui/react-icons'
 import { useTheme } from 'next-themes'
 import { useAccount, useEnsAvatar, useEnsName } from 'wagmi'
