@@ -7,6 +7,14 @@ declare global {
   }>
 
   type PagePropsWithChildren<P = unknown, S = unknown> = Readonly<PropsWithChildren<PageProps<P, S>>>
+
+  namespace NodeJS {
+    interface ProcessEnv {
+      NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: string
+      COIN_MARKET_DOMAIN: string
+      COIN_MARKET_KEY: string
+    }
+  }
 }
 
 export {}
