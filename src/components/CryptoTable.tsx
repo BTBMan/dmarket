@@ -9,8 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { formatCurrency } from '@/utils'
 
-export default function CryptoTable() {
+export default async function CryptoTable() {
+  const data = await fetch(`${process.env.COIN_MARKET_DOMAIN}/cryptocurrency/listings/latest`, {
+    headers: {
+      'X-CMC_PRO_API_KEY': process.env.COIN_MARKET_KEY as string,
+    },
+  }).then(res => res.json())
+
+  console.log(data)
+
   return (
     <div>
       <Table>
@@ -29,37 +38,37 @@ export default function CryptoTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 10 }).map((_, index) => (
+          {(data.data || []).map((item: any, index: number) => (
             // eslint-disable-next-line react/no-array-index-key
             <TableRow key={index}>
               <TableCell className="text-right">
                 <div className="flex items-center justify-between">
                   <Collection isCollection={false} />
-                  1
+                  {index + 1}
                 </div>
               </TableCell>
               <TableCell>
-                Img Bitcoin <span>BTC</span>
+                Img Bitcoin <span>{item.symbol}</span>
               </TableCell>
-              <TableCell className="text-right">$86,732.11</TableCell>
+              <TableCell className="text-right">{formatCurrency(item.quote.USD.price)}</TableCell>
               <TableCell>
                 <div className="flex items-center justify-end">
-                  <PercentageValue value={10} />
-                </div>
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center justify-end">
-                  <PercentageValue value={10} isUp={false} />
+                  <PercentageValue value={Math.abs(item.quote.USD.percent_change_1h).toFixed(2)} isUp={item.quote.USD.percent_change_1h > 0} />
                 </div>
               </TableCell>
               <TableCell>
                 <div className="flex items-center justify-end">
-                  <PercentageValue value={10} />
+                  <PercentageValue value={Math.abs(item.quote.USD.percent_change_24h).toFixed(2)} isUp={item.quote.USD.percent_change_24h > 0} />
                 </div>
               </TableCell>
-              <TableCell className="text-right">$1,718,427,973,931</TableCell>
+              <TableCell>
+                <div className="flex items-center justify-end">
+                  <PercentageValue value={Math.abs(item.quote.USD.percent_change_7d).toFixed(2)} isUp={item.quote.USD.percent_change_7d > 0} />
+                </div>
+              </TableCell>
+              <TableCell className="text-right">{formatCurrency(item.quote.USD.market_cap)}</TableCell>
               <TableCell className="text-right">
-                <div>$1,718,427,973,931</div>
+                <div>{formatCurrency(item.quote.USD.volume_24h)}</div>
                 <div className="text-[12px]">609.54K BTC</div>
               </TableCell>
               <TableCell className="text-right">
