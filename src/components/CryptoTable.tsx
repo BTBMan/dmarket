@@ -91,14 +91,12 @@ export default async function CryptoTable() {
               <TableCell className="text-right">
                 <div>{formatCurrency(item.quote.USD.volume_24h)}</div>
                 <div className="text-[12px] text-gray-300">
-                  {formatNumberToShort(item.quote.USD.volume_24h / item.quote.USD.price)}
-                  {item.symbol}
+                  {formatNumberToShort(item.quote.USD.volume_24h / item.quote.USD.price)} {item.symbol}
                 </div>
               </TableCell>
               <TableCell className="text-right">
-                <div className="text-gray-300">
-                  {formatNumberToShort(item.circulating_supply)}
-                  {item.symbol}
+                <div>
+                  {formatNumberToShort(item.circulating_supply)} {item.symbol}
                 </div>
               </TableCell>
               <TableCell className="text-right">
