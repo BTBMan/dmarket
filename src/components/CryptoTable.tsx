@@ -13,7 +13,7 @@ import {
 import { formatCurrency, formatNumberToShort, getCryptoImage, getCryptoSparkLines } from '@/utils'
 
 export default async function CryptoTable() {
-  const data = await fetch(`${process.env.COIN_MARKET_DOMAIN}/cryptocurrency/listings/latest`, {
+  const res = await fetch(`${process.env.COIN_MARKET_DOMAIN}/v1/cryptocurrency/listings/latest`, {
     headers: {
       'X-CMC_PRO_API_KEY': process.env.COIN_MARKET_KEY as string,
     },
@@ -37,7 +37,7 @@ export default async function CryptoTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {(data.data || []).map((item: any, index: number) => (
+          {(res.data || []).map((item: any, index: number) => (
             <TableRow key={item.id}>
               <TableCell className="text-right">
                 <div className="flex items-center justify-between">
