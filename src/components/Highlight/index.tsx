@@ -1,5 +1,6 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import HighlightCard from './HighlightCard'
+import { formatCurrency } from '@/utils'
 
 interface CardItem {
   title: string
@@ -7,37 +8,47 @@ interface CardItem {
 }
 
 interface CoinItem {
-  name: string
+  id: string
   symbol: string
   price: number
-  change: number
+  percent_change_24h: string
 }
 
-export default function Highlight() {
-  const [cardList, setCardList] = useState<Record<string, any>[]>([
-    {
-      title: 'Trending Coins',
-      list: [],
-    },
-    {
-      title: 'Trending on DEXScan',
-      list: [],
-    },
-    {
-      title: 'Recently Added',
-      list: [],
-    },
-  ])
+export default async function Highlight() {
+  // const [cardList, setCardList] = useState<Record<string, any>[]>([
+  //   {
+  //     title: 'Trending Coins',
+  //     list: [],
+  //   },
+  //   {
+  //     title: 'Trending on DEXScan',
+  //     list: [],
+  //   },
+  //   {
+  //     title: 'Recently Added',
+  //     list: [],
+  //   },
+  // ])
 
   const LIMIT = 5
-  const getTrendingCoins = async () => {
+  const getTrendingCoins = async (): Promise<CardItem> => {
     const res = await fetch(`${process.env.COIN_MARKET_DOMAIN}/v1/cryptocurrency/trending/latest?limit=${LIMIT}`, {
       headers: {
         'X-CMC_PRO_API_KEY': process.env.COIN_MARKET_KEY as string,
       },
     }).then(res => res.json())
 
-    return res
+    const list: CoinItem[] = res.data.map((item: any) => ({
+      id: item.id,
+      symbol: item.symbol,
+      price: formatCurrency(item.quote.USD.price),
+      percent_change_24h: item.quote.USD.percent_change_24h.toFixed(2),
+    }))
+
+    return {
+      title: 'Trending Coins',
+      list,
+    }
   }
 
   const getDEXTrendingCoins = async () => {
@@ -61,12 +72,36 @@ export default function Highlight() {
   }
 
   const getHighlightData = async () => {
-    const resArr = await Promise.all([
-      getTrendingCoins(),
-      getDEXTrendingCoins(),
-      getRecentlyAddedCoins(),
-    ])
+    const res = await fetch(`${process.env.COIN_MARKET_DOMAIN}/v1/cryptocurrency/listings/latest`, {
+      headers: {
+        'X-CMC_PRO_API_KEY': process.env.COIN_MARKET_KEY as string,
+      },
+    }).then(res => res.json())
+
+    const topRankingCoins = res.data.slice(0, 5)
+    const topGainersCoins = []
+    const topLosersCoins = []
+
+    ;(res.data || []).forEach((item: any) => {
+      if (item.quote.USD.percent_change_24h > 0) {
+        topGainersCoins.push(item)
+      }
+      else {
+        topLosersCoins.push(item)
+      }
+    })
+
+    console.log(topRankingCoins, topGainersCoins, topLosersCoins)
+    // const resArr = await Promise.all([
+    //   getTrendingCoins(),
+    //   // getDEXTrendingCoins(),
+    //   // getRecentlyAddedCoins(),
+    // ])
+
+    // console.log(resArr)
   }
+
+  await getHighlightData()
 
   return (
     <div>

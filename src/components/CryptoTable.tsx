@@ -89,7 +89,7 @@ export default async function CryptoTable() {
                 {formatCurrency(item.quote.USD.market_cap, { maximumFractionDigits: 0 })}
               </TableCell>
               <TableCell className="text-right">
-                <div>{formatCurrency(item.quote.USD.volume_24h)}</div>
+                <div>{formatCurrency(item.quote.USD.volume_24h, { maximumFractionDigits: 0 })}</div>
                 <div className="text-[12px] text-gray-300">
                   {formatNumberToShort(item.quote.USD.volume_24h / item.quote.USD.price)} {item.symbol}
                 </div>
