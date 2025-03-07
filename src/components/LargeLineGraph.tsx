@@ -13,7 +13,7 @@ interface Props {
   isUp?: boolean
 }
 
-export default function SimpleLineChart({ data, className, isUp = true }: Props) {
+export default function LargeLineGraph({ data, className, isUp = true }: Props) {
   const chartConfig = {
     value: {
       label: 'Value',

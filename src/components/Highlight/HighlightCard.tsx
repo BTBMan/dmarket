@@ -1,16 +1,25 @@
-'use client'
-
 import Link from 'next/link'
 import { ChevronRightIcon } from '@radix-ui/react-icons'
-import { useState } from 'react'
 import clsx from 'clsx'
+import Image from 'next/image'
 import PercentageValue from '@/components/PercentageValue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import SimpleLineChart from '@/components/SimpleLineChart'
+import SimpleLineChart from '@/components/SimpleLineGraph'
+import { getCryptoImage } from '@/utils'
 
-export default function HighlightCard({ title }: { title: string }) {
-  const [list] = useState([{ id: 1 }, { id: 2 }, { id: 3 }])
+export interface CoinItem {
+  id: string
+  symbol: string
+  price: string
+  percent_change_24h: string
+}
 
+interface Props {
+  title: string
+  list: CoinItem[]
+}
+
+export default function HighlightCard({ title, list }: Props) {
   return (
     <div>
       <Card className="shadow-sm hover:shadow-lg transition-all duration-300">
@@ -26,12 +35,10 @@ export default function HighlightCard({ title }: { title: string }) {
                 <div className="flex-1 flex items-center justify-between">
                   <div className="flex items-center gap-[8px]">
                     <span className="text-gray-500">{ index + 1 }</span>
-                    <span>Img</span>
-                    <span>BTC</span>
+                    <span><Image className="rounded-full" src={getCryptoImage(item.id)} alt={item.symbol} width={24} height={24} /></span>
+                    <span>{item.symbol}</span>
                   </div>
-                  <div className={clsx(index === 0 ? 'text-green-500' : 'text-red-500')}>
-                    $95,682.59
-                  </div>
+                  <div>{item.price}</div>
                 </div>
                 <div className="min-w-[88px] flex flex-col items-end">
                   <SimpleLineChart
@@ -46,7 +53,7 @@ export default function HighlightCard({ title }: { title: string }) {
                       { value: 214 },
                     ]}
                   />
-                  <PercentageValue value={10} isUp={index !== 0} />
+                  <PercentageValue value={Math.abs(Number(item.percent_change_24h))} isUp={Number(item.percent_change_24h) > 0} />
                 </div>
               </li>
             ))}

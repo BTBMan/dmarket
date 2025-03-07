@@ -1,76 +1,19 @@
-// import { useState } from 'react'
+import type { CoinItem } from './HighlightCard'
 import HighlightCard from './HighlightCard'
 import { formatCurrency } from '@/utils'
 
-interface CardItem {
-  title: string
-  list: CoinItem[]
-}
+const HIGHLIGHT_LIMIT = 5
 
-interface CoinItem {
-  id: string
-  symbol: string
-  price: number
-  percent_change_24h: string
+function convertToCardItem(item: any): CoinItem {
+  return {
+    id: item.id,
+    symbol: item.symbol,
+    price: formatCurrency(item.quote.USD.price),
+    percent_change_24h: item.quote.USD.percent_change_24h.toFixed(2),
+  }
 }
 
 export default async function Highlight() {
-  // const [cardList, setCardList] = useState<Record<string, any>[]>([
-  //   {
-  //     title: 'Trending Coins',
-  //     list: [],
-  //   },
-  //   {
-  //     title: 'Trending on DEXScan',
-  //     list: [],
-  //   },
-  //   {
-  //     title: 'Recently Added',
-  //     list: [],
-  //   },
-  // ])
-
-  const LIMIT = 5
-  const getTrendingCoins = async (): Promise<CardItem> => {
-    const res = await fetch(`${process.env.COIN_MARKET_DOMAIN}/v1/cryptocurrency/trending/latest?limit=${LIMIT}`, {
-      headers: {
-        'X-CMC_PRO_API_KEY': process.env.COIN_MARKET_KEY as string,
-      },
-    }).then(res => res.json())
-
-    const list: CoinItem[] = res.data.map((item: any) => ({
-      id: item.id,
-      symbol: item.symbol,
-      price: formatCurrency(item.quote.USD.price),
-      percent_change_24h: item.quote.USD.percent_change_24h.toFixed(2),
-    }))
-
-    return {
-      title: 'Trending Coins',
-      list,
-    }
-  }
-
-  const getDEXTrendingCoins = async () => {
-    const res = await fetch(`${process.env.COIN_MARKET_DOMAIN}/v4/dex/listings/quotes?limit=${LIMIT}`, {
-      headers: {
-        'X-CMC_PRO_API_KEY': process.env.COIN_MARKET_KEY as string,
-      },
-    }).then(res => res.json())
-
-    return res
-  }
-
-  const getRecentlyAddedCoins = async () => {
-    const res = await fetch(`${process.env.COIN_MARKET_DOMAIN}/v1/cryptocurrency/listings/new?limit=${LIMIT}`, {
-      headers: {
-        'X-CMC_PRO_API_KEY': process.env.COIN_MARKET_KEY as string,
-      },
-    }).then(res => res.json())
-
-    return res
-  }
-
   const getHighlightData = async () => {
     const res = await fetch(`${process.env.COIN_MARKET_DOMAIN}/v1/cryptocurrency/listings/latest`, {
       headers: {
@@ -78,39 +21,35 @@ export default async function Highlight() {
       },
     }).then(res => res.json())
 
-    const topRankingCoins = res.data.slice(0, 5)
-    const topGainersCoins = []
-    const topLosersCoins = []
+    const topRankingCoins: CoinItem[] = []
+    const topGainersCoins: CoinItem[] = []
+    const topLosersCoins: CoinItem[] = []
 
     ;(res.data || []).forEach((item: any) => {
-      if (item.quote.USD.percent_change_24h > 0) {
-        topGainersCoins.push(item)
+      if (topRankingCoins.length < HIGHLIGHT_LIMIT) {
+        topRankingCoins.push(convertToCardItem(item))
       }
-      else {
-        topLosersCoins.push(item)
+      if (item.quote.USD.percent_change_24h > 0 && topGainersCoins.length < HIGHLIGHT_LIMIT) {
+        topGainersCoins.push(convertToCardItem(item))
+      }
+      else if (item.quote.USD.percent_change_24h < 0 && topLosersCoins.length < HIGHLIGHT_LIMIT) {
+        topLosersCoins.push(convertToCardItem(item))
       }
     })
 
-    console.log(topRankingCoins, topGainersCoins, topLosersCoins)
-    // const resArr = await Promise.all([
-    //   getTrendingCoins(),
-    //   // getDEXTrendingCoins(),
-    //   // getRecentlyAddedCoins(),
-    // ])
-
-    // console.log(resArr)
+    return { topRankingCoins, topGainersCoins, topLosersCoins }
   }
 
-  await getHighlightData()
+  const { topRankingCoins, topGainersCoins, topLosersCoins } = await getHighlightData()
 
   return (
     <div>
       <h1 className="text-[24px] font-bold pt-3">Today's Cryptocurrency Prices by Dmarket</h1>
-      <h4 className="text-[14px] text-gray-500 mt-3">blablabla</h4>
+      <h4 className="text-[14px] text-gray-500 mt-3">Some message here...</h4>
       <div className="grid grid-cols-3 gap-4 mt-8">
-        <HighlightCard title="Trending Coins" />
-        <HighlightCard title="Trending on DEXScan" />
-        <HighlightCard title="Recently Added" />
+        <HighlightCard title="Top Rankings" list={topRankingCoins} />
+        <HighlightCard title="Top Gainers" list={topGainersCoins} />
+        <HighlightCard title="Top Losers" list={topLosersCoins} />
       </div>
     </div>
   )

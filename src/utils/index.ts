@@ -27,6 +27,6 @@ export function getCryptoImage(id: string) {
   return `https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`
 }
 
-export function getCryptoSparkLines(id: string) {
+export function getCryptoSparkLines(id: string | number) {
   return `https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/${id}.svg`
 }
