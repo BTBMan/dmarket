@@ -7,6 +7,7 @@ const HIGHLIGHT_LIMIT = 5
 function convertToCardItem(item: any): CoinItem {
   return {
     id: item.id,
+    slug: item.slug,
     symbol: item.symbol,
     price: formatCurrency(item.quote.USD.price),
     percent_change_24h: item.quote.USD.percent_change_24h.toFixed(2),
