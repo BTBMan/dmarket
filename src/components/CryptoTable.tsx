@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import clsx from 'clsx'
+import SimpleLineGraph from '@/components/SimpleLineGraph'
 import Collection from '@/components/Collection'
 import PercentageValue from '@/components/PercentageValue'
 import {
@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { formatCurrency, formatNumberToShort, getCryptoImage, getCryptoSparkLines } from '@/utils'
+import { formatCurrency, formatNumberToShort, getCryptoImage } from '@/utils'
 
 export default async function CryptoTable() {
   const res = await fetch(`${process.env.COIN_MARKET_DOMAIN}/v1/cryptocurrency/listings/latest`, {
@@ -100,17 +100,13 @@ export default async function CryptoTable() {
                 </div>
               </TableCell>
               <TableCell className="text-right">
-                <div className="relative h-[50px] w-full">
-                  <Image
-                    className={clsx({
-                      'hue-rotate-[75deg] saturate-[130%] brightness-[0.7]': item.quote.USD.percent_change_7d > 0,
-                      'hue-rotate-[300deg] saturate-[230%] brightness-[0.7] contrast-[180%]': item.quote.USD.percent_change_7d < 0,
-                    })}
-                    src={getCryptoSparkLines(item.id)}
-                    alt={item.name}
-                    fill
-                  />
-                </div>
+                <SimpleLineGraph
+                  className="h-[50px] w-full"
+                  id={item.id}
+                  alt={item.symbol}
+                  value={item.quote.USD.percent_change_7d}
+                  duration="7d"
+                />
               </TableCell>
             </TableRow>
           ))}
