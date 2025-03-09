@@ -13,6 +13,8 @@ declare global {
       NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: string
       COIN_MARKET_DOMAIN: string
       COIN_MARKET_KEY: string
+      NEXT_PUBLIC_COIN_MARKET_STATIC_DOMAIN: string
+      NEXT_PUBLIC_COIN_MARKET_GENERATED_DOMAIN: string
     }
   }
 }

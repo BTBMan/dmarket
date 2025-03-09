@@ -25,9 +25,9 @@ export function formatNumberToShort(value: number) {
 }
 
 export function getCryptoImage(id: string) {
-  return `https://s2.coinmarketcap.com/static/img/coins/64x64/${id}.png`
+  return `${process.env.NEXT_PUBLIC_COIN_MARKET_STATIC_DOMAIN}/static/img/coins/64x64/${id}.png`
 }
 
 export function getCryptoSparkLines(id: string | number, duration: SparkLineDuration = '7d') {
-  return `https://s3.coinmarketcap.com/generated/sparklines/web/${duration}/2781/${id}.svg`
+  return `${process.env.NEXT_PUBLIC_COIN_MARKET_GENERATED_DOMAIN}/generated/sparklines/web/${duration}/2781/${id}.svg`
 }
