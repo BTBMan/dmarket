@@ -6,7 +6,7 @@ export default function MainNav() {
       <Link href="/">
         Cryptocurrencies
       </Link>
-      <Link href="/">
+      <Link href="/nfts">
         NFTs
       </Link>
       <Link href="/">
