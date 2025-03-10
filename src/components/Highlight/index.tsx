@@ -1,6 +1,7 @@
 import type { CoinItem } from './HighlightCard'
 import HighlightCard from './HighlightCard'
 import { formatCurrency } from '@/utils'
+import { cmcFetch } from '@/utils/fetches'
 
 const HIGHLIGHT_LIMIT = 5
 
@@ -16,11 +17,7 @@ function convertToCardItem(item: any): CoinItem {
 
 export default async function Highlight() {
   const getHighlightData = async () => {
-    const res = await fetch(`${process.env.COIN_MARKET_DOMAIN}/v1/cryptocurrency/listings/latest`, {
-      headers: {
-        'X-CMC_PRO_API_KEY': process.env.COIN_MARKET_KEY as string,
-      },
-    }).then(res => res.json())
+    const res = await cmcFetch(`v1/cryptocurrency/listings/latest`).then(res => res.json())
 
     const topRankingCoins: CoinItem[] = []
     const topGainersCoins: CoinItem[] = []

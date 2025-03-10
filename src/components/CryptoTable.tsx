@@ -12,13 +12,10 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { formatCurrency, formatNumberToShort, getCryptoImage } from '@/utils'
+import { cmcFetch } from '@/utils/fetches'
 
 export default async function CryptoTable() {
-  const res = await fetch(`${process.env.COIN_MARKET_DOMAIN}/v1/cryptocurrency/listings/latest`, {
-    headers: {
-      'X-CMC_PRO_API_KEY': process.env.COIN_MARKET_KEY as string,
-    },
-  }).then(res => res.json())
+  const res = await cmcFetch(`v1/cryptocurrency/listings/latest`).then(res => res.json())
 
   return (
     <div>
