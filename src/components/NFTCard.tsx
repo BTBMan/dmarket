@@ -11,7 +11,14 @@ export default function NFTCard({ className }: Props) {
     <div className={className}>
       <Card className="overflow-hidden">
         <CardContent className="relative h-[340px] overflow-hidden">
-          <Image className="hover:scale-110 transition-all duration-300" src="https://i.seadn.io/s/raw/files/1de3a093463179fd5e4faf5b2afb1a68.png?auto=format&dpr=1&w=750" alt="RKL Rookies" fill objectFit="cover" />
+          <Image
+            className="hover:scale-110 transition-all duration-300 object-cover"
+            src="https://i.seadn.io/s/raw/files/1de3a093463179fd5e4faf5b2afb1a68.png?auto=format&dpr=1&w=750"
+            alt="RKL Rookies"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
         </CardContent>
         <CardFooter className="p-4">
           <div className="w-full">
