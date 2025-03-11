@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { FileUpload } from '@/components/FileUpload'
 
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }).max(20),
@@ -100,7 +101,15 @@ export default function NFTForm() {
                   <div className="flex items-center gap-[8px]">
                     <FormLabel className={leftSpace.w}><span className="text-foreground">Image</span></FormLabel>
                     <FormControl className="flex-1">
-                      <Input {...field} />
+                      {/* <Input {...field} /> */}
+                      <FileUpload
+                        {...field}
+                        onFilesSelected={(files) => {
+                          console.log('Files selected:', files)
+                        }}
+                        maxFiles={5}
+                        accept="image/*"
+                      />
                     </FormControl>
                   </div>
                   <FormMessage className={leftSpace.ml} />
