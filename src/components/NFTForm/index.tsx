@@ -6,12 +6,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { FileUpload } from '@/components/FileUpload'
+import FileUpload from '@/components/FileUpload'
 
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }).max(20),
   description: z.string().min(1, { message: 'Description is required' }).max(100),
-  image: z.string().min(1, { message: 'Image is required' }),
+  image: z.array(z.instanceof(File)).min(1, { message: 'Image is required' }),
   ethPrice: z.string().min(1, { message: 'ETH Price is required' }),
 })
 
@@ -28,13 +28,13 @@ export default function NFTForm() {
     defaultValues: {
       name: '',
       description: '',
-      image: '',
+      image: [],
       ethPrice: '',
     },
   })
 
   function onSubmit(_values: FieldValues) {
-    //
+    // console.log(_values)
   }
 
   return (
@@ -101,15 +101,7 @@ export default function NFTForm() {
                   <div className="flex items-center gap-[8px]">
                     <FormLabel className={leftSpace.w}><span className="text-foreground">Image</span></FormLabel>
                     <FormControl className="flex-1">
-                      {/* <Input {...field} /> */}
-                      <FileUpload
-                        {...field}
-                        onFilesSelected={(files) => {
-                          console.log('Files selected:', files)
-                        }}
-                        maxFiles={5}
-                        accept="image/*"
-                      />
+                      <FileUpload {...field} />
                     </FormControl>
                   </div>
                   <FormMessage className={leftSpace.ml} />
