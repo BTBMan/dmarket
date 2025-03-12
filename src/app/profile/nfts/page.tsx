@@ -8,8 +8,8 @@ export default function NftsPage() {
         <DialogForm />
       </div>
       <div className="grid grid-cols-5 gap-4 max-xl:grid-cols-4">
-        { Array.from({ length: 10 }).map((_, index) => (
-          <NFTCard key={index} />
+        { Array.from({ length: 10 }, (_, i) => i + 1).map(v => (
+          <NFTCard key={v} />
         )) }
       </div>
     </div>
