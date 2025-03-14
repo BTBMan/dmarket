@@ -36,5 +36,11 @@
     "scss",
     "pcss",
     "postcss"
-  ]
+  ],
+
+  "[solidity]": {
+    "editor.defaultFormatter": "NomicFoundation.hardhat-solidity",
+    "editor.formatOnSave": true,
+  },
+  "solidity.formatter": "forge",
 }
