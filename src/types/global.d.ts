@@ -15,6 +15,11 @@ declare global {
       COIN_MARKET_KEY: string
       NEXT_PUBLIC_COIN_MARKET_STATIC_DOMAIN: string
       NEXT_PUBLIC_COIN_MARKET_GENERATED_DOMAIN: string
+      TEST_PRIVATE_KEY: string
+      LOCAL_PRIVATE_KEY: string
+      LOCAL_RPC_URL: string
+      SEPOLIA_RPC_URL: string
+      ETHERSCAN_API_KEY: string
     }
   }
 }
