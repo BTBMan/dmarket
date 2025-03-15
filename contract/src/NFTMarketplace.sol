@@ -4,6 +4,8 @@ pragma solidity ^0.8.27;
 /* Imports *******/
 import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
 /* Events ********/
 
 /* Errors ********/
@@ -17,7 +19,7 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
  * @author BTBMan
  * @notice This is a contract for a marketplace for NFTs
  */
-contract NFTMarketplace is ERC721URIStorage {
+contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
     ////////////////////////////////////
     // Type declarations              //
     ////////////////////////////////////
@@ -36,15 +38,12 @@ contract NFTMarketplace is ERC721URIStorage {
 
     address payable private s_owner;
     uint256 private s_tokenIds;
-    uint256 private s_marketItemIds;
-    mapping(uint256 marketItemId => MarketItem marketItem) private s_marketItems;
+    mapping(uint256 tokenId => MarketItem marketItem) private s_marketItems;
 
     ////////////////////////////////////
     // Events                         //
     ////////////////////////////////////
-    event MarketItemCreated(
-        uint256 indexed marketItemId, uint256 indexed tokenId, address seller, address owner, uint256 price, bool sold
-    );
+    event MarketItemCreated(uint256 indexed tokenId, address seller, address owner, uint256 price, bool sold);
 
     ////////////////////////////////////
     // Errors                         //
@@ -54,6 +53,12 @@ contract NFTMarketplace is ERC721URIStorage {
     ////////////////////////////////////
     // Modifiers                      //
     ////////////////////////////////////
+    modifier moreThanListingFee(uint256 price) {
+        if (price < LISTING_FEE) {
+            revert NFTMarketplace__NotEnoughListingFeePaid();
+        }
+        _;
+    }
 
     constructor() ERC721("Awesome NFT", "AN") {
         s_owner = payable(msg.sender);
@@ -66,24 +71,26 @@ contract NFTMarketplace is ERC721URIStorage {
     ////////////////////////////////////
     // Functions                      //
     ////////////////////////////////////
-    function mintNFT(string memory tokenURI) public returns (uint256) {
-        _mint(msg.sender, s_tokenIds);
+    function mintNFT(string memory tokenURI) private returns (uint256) {
+        _safeMint(msg.sender, s_tokenIds);
         _setTokenURI(s_tokenIds, tokenURI);
         s_tokenIds++;
         return s_tokenIds;
     }
 
-    function createMarketItem(uint256 price, string memory tokenURI) public payable {
-        if (price < LISTING_FEE) {
-            revert NFTMarketplace__NotEnoughListingFeePaid();
-        }
-
+    function createMarketItem(uint256 price, string memory tokenURI)
+        external
+        payable
+        moreThanListingFee(price)
+        nonReentrant
+    {
         uint256 tokenId = mintNFT(tokenURI);
 
-        s_marketItems[s_marketItemIds] = MarketItem(tokenId, price, payable(msg.sender), payable(address(0)), false);
-        s_marketItemIds++;
+        s_marketItems[tokenId] = MarketItem(tokenId, price, payable(msg.sender), payable(address(0)), false);
 
-        emit MarketItemCreated(s_marketItemIds, tokenId, msg.sender, address(0), price, false);
+        _safeTransfer(msg.sender, address(this), tokenId);
+
+        emit MarketItemCreated(tokenId, msg.sender, address(0), price, false);
     }
 
     ////////////////////////////////////
