@@ -45,20 +45,31 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard {
     // Events                         //
     ////////////////////////////////////
     event MarketItemCreated(uint256 indexed tokenId, address seller, address owner, uint256 price, bool sold);
+    event MarketItemPurchased(uint256 indexed tokenId, address buyer, address seller, uint256 price);
 
     ////////////////////////////////////
     // Errors                         //
     ////////////////////////////////////
-    error NFTMarketplace__NotEnoughListingFeePaid();
+    error NFTMarketplace__IncorrectListingFee();
     error NFTMarketplace__ReceivedFromZeroAddress();
+    error NFTMarketplace__MarketItemAlreadySold();
+    error NFTMarketplace__MarketItemAlreadyOwned();
+    error NFTMarketplace__IncorrectPrice();
 
     ////////////////////////////////////
     // Modifiers                      //
     ////////////////////////////////////
 
-    modifier moreThanListingFee(uint256 price) {
-        if (price < LISTING_FEE || msg.value < LISTING_FEE) {
-            revert NFTMarketplace__NotEnoughListingFeePaid();
+    modifier correctListingFee() {
+        if (msg.value != LISTING_FEE) {
+            revert NFTMarketplace__IncorrectListingFee();
+        }
+        _;
+    }
+
+    modifier priceGreaterThanZero(uint256 price) {
+        if (price <= 0) {
+            revert NFTMarketplace__IncorrectPrice();
         }
         _;
     }
@@ -74,7 +85,7 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard {
     ////////////////////////////////////
     // Functions                      //
     ////////////////////////////////////
-    function mintNFT(string memory tokenURI) public returns (uint256) {
+    function mintNFT(string memory tokenURI) private returns (uint256) {
         _safeMint(msg.sender, s_tokenIds);
         _setTokenURI(s_tokenIds, tokenURI);
         s_tokenIds++;
@@ -84,7 +95,8 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard {
     function createMarketItem(uint256 price, string memory tokenURI)
         external
         payable
-        moreThanListingFee(price)
+        correctListingFee
+        priceGreaterThanZero(price)
         nonReentrant
     {
         uint256 tokenId = mintNFT(tokenURI);
@@ -102,6 +114,32 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard {
         emit MarketItemCreated({tokenId: tokenId, seller: msg.sender, owner: address(0), price: price, sold: false});
     }
 
+    function purchaseMarketItem(uint256 tokenId) external payable nonReentrant {
+        MarketItem memory item = s_marketItems[tokenId];
+        address payable seller = item.seller;
+
+        if (item.sold) {
+            revert NFTMarketplace__MarketItemAlreadySold();
+        }
+        if (item.owner != address(0)) {
+            revert NFTMarketplace__MarketItemAlreadyOwned();
+        }
+        if (msg.value != item.price) {
+            revert NFTMarketplace__IncorrectPrice();
+        }
+
+        item.owner = payable(msg.sender);
+        item.seller = payable(address(0));
+        item.sold = true;
+
+        s_marketItems[tokenId] = item;
+
+        _safeTransfer(address(this), msg.sender, tokenId);
+        seller.transfer(msg.value);
+
+        emit MarketItemPurchased({tokenId: tokenId, buyer: msg.sender, seller: seller, price: item.price});
+    }
+
     function onERC721Received(address, address from, uint256, bytes calldata) external pure override returns (bytes4) {
         if (from == address(0)) {
             revert NFTMarketplace__ReceivedFromZeroAddress();
@@ -112,4 +150,11 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard {
     ////////////////////////////////////
     // Getter functions               //
     ////////////////////////////////////
+    function getListingFee() public pure returns (uint256) {
+        return LISTING_FEE;
+    }
+
+    function getMarketItem(uint256 tokenId) public view returns (MarketItem memory) {
+        return s_marketItems[tokenId];
+    }
 }

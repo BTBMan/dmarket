@@ -15,25 +15,40 @@ contract NFTMarketplaceTest is Test, IHelperConfig {
     address public user = makeAddr("user");
 
     uint256 public constant STARTING_BALANCE = 1 ether;
-    uint256 public constant ITEM_PRICE = 0.01 ether;
+    uint256 public constant ITEM_PRICE = 0.1 ether;
+
+    uint256 public listingFee;
+
+    modifier createMarketItem() {
+        vm.startPrank(user);
+        nftMarketplace.createMarketItem{value: listingFee}(ITEM_PRICE, "https://www.google.com");
+        vm.stopPrank();
+        _;
+    }
 
     function setUp() public {
         (nftMarketplace, helperConfig) = new NFTMarketplaceScript().run();
         activeNetworkConfig = helperConfig.getActiveNetworkConfig();
+        listingFee = nftMarketplace.getListingFee();
 
         vm.deal(user, STARTING_BALANCE);
     }
 
-    function testMoreThanListingFee() public payable {
+    function testIncorrectListingFeeWhenCreateMarketItem() public payable {
         vm.startPrank(user);
-        vm.expectRevert(NFTMarketplace.NFTMarketplace__NotEnoughListingFeePaid.selector);
-        nftMarketplace.createMarketItem{value: ITEM_PRICE - 0.001 ether}(
-            ITEM_PRICE - 0.001 ether, "https://www.google.com"
-        );
+        vm.expectRevert(NFTMarketplace.NFTMarketplace__IncorrectListingFee.selector);
+        nftMarketplace.createMarketItem(ITEM_PRICE, "");
         vm.stopPrank();
     }
 
-    function testEmitEventAfterCreateMarketItem() public {
+    function testIncorrectPriceWhenCreateMarketItem() public {
+        vm.startPrank(user);
+        vm.expectRevert(NFTMarketplace.NFTMarketplace__IncorrectPrice.selector);
+        nftMarketplace.createMarketItem{value: listingFee}(0, "");
+        vm.stopPrank();
+    }
+
+    function testEmitEventAfterSuccessfulCreateMarketItem() public {
         vm.expectEmit(true, false, false, false);
         emit NFTMarketplace.MarketItemCreated({
             tokenId: 0,
@@ -44,24 +59,36 @@ contract NFTMarketplaceTest is Test, IHelperConfig {
         });
 
         vm.startPrank(user);
-        nftMarketplace.createMarketItem{value: ITEM_PRICE}(ITEM_PRICE, "https://www.google.com");
+        nftMarketplace.createMarketItem{value: listingFee}(ITEM_PRICE, "");
         vm.stopPrank();
     }
 
-    function testMarketplaceOwnedTokenAfterCreateMarketItem() public {
-        vm.startPrank(user);
-        nftMarketplace.createMarketItem{value: ITEM_PRICE}(ITEM_PRICE, "https://www.google.com");
-        vm.stopPrank();
-
+    function testMarketplaceOwnedTokenAfterSuccessfulCreateMarketItem() public createMarketItem {
         assertEq(nftMarketplace.ownerOf(0), address(nftMarketplace));
     }
 
-    function testBalanceAfterCreateMarketItem() public {
+    function testBalanceAfterSuccessfulCreateMarketItem() public createMarketItem {
+        assertEq(address(nftMarketplace).balance, listingFee);
+        assertEq(user.balance, STARTING_BALANCE - listingFee);
+    }
+
+    function testIncorrectPriceWhenPurchaseMarketItem() public createMarketItem {
         vm.startPrank(user);
-        nftMarketplace.createMarketItem{value: ITEM_PRICE}(ITEM_PRICE, "https://www.google.com");
+        vm.expectRevert(NFTMarketplace.NFTMarketplace__IncorrectPrice.selector);
+        nftMarketplace.purchaseMarketItem(0);
+        vm.stopPrank();
+    }
+
+    function testBuyerOwnedTokenAfterSuccessfulPurchaseMarketItem() public createMarketItem {
+        vm.startPrank(user);
+        nftMarketplace.purchaseMarketItem{value: ITEM_PRICE}(0);
         vm.stopPrank();
 
-        assertEq(address(nftMarketplace).balance, ITEM_PRICE);
-        assertEq(user.balance, STARTING_BALANCE - ITEM_PRICE);
+        NFTMarketplace.MarketItem memory marketItem = nftMarketplace.getMarketItem(0);
+
+        assertEq(nftMarketplace.ownerOf(0), user);
+        assertEq(marketItem.owner, user);
+        assertEq(marketItem.sold, true);
+        assertEq(marketItem.seller, address(0));
     }
 }
