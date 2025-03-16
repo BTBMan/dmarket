@@ -5,6 +5,7 @@ pragma solidity ^0.8.27;
 import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 /* Events ********/
 
@@ -19,7 +20,7 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
  * @author BTBMan
  * @notice This is a contract for a marketplace for NFTs
  */
-contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
+contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard {
     ////////////////////////////////////
     // Type declarations              //
     ////////////////////////////////////
@@ -49,12 +50,14 @@ contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
     // Errors                         //
     ////////////////////////////////////
     error NFTMarketplace__NotEnoughListingFeePaid();
+    error NFTMarketplace__ReceivedFromZeroAddress();
 
     ////////////////////////////////////
     // Modifiers                      //
     ////////////////////////////////////
+
     modifier moreThanListingFee(uint256 price) {
-        if (price < LISTING_FEE) {
+        if (price < LISTING_FEE || msg.value < LISTING_FEE) {
             revert NFTMarketplace__NotEnoughListingFeePaid();
         }
         _;
@@ -71,11 +74,11 @@ contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
     ////////////////////////////////////
     // Functions                      //
     ////////////////////////////////////
-    function mintNFT(string memory tokenURI) private returns (uint256) {
+    function mintNFT(string memory tokenURI) public returns (uint256) {
         _safeMint(msg.sender, s_tokenIds);
         _setTokenURI(s_tokenIds, tokenURI);
         s_tokenIds++;
-        return s_tokenIds;
+        return s_tokenIds - 1;
     }
 
     function createMarketItem(uint256 price, string memory tokenURI)
@@ -86,11 +89,24 @@ contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
     {
         uint256 tokenId = mintNFT(tokenURI);
 
-        s_marketItems[tokenId] = MarketItem(tokenId, price, payable(msg.sender), payable(address(0)), false);
+        s_marketItems[tokenId] = MarketItem({
+            tokenId: tokenId,
+            price: price,
+            seller: payable(msg.sender),
+            owner: payable(address(0)),
+            sold: false
+        });
 
         _safeTransfer(msg.sender, address(this), tokenId);
 
-        emit MarketItemCreated(tokenId, msg.sender, address(0), price, false);
+        emit MarketItemCreated({tokenId: tokenId, seller: msg.sender, owner: address(0), price: price, sold: false});
+    }
+
+    function onERC721Received(address, address from, uint256, bytes calldata) external pure override returns (bytes4) {
+        if (from == address(0)) {
+            revert NFTMarketplace__ReceivedFromZeroAddress();
+        }
+        return this.onERC721Received.selector;
     }
 
     ////////////////////////////////////
