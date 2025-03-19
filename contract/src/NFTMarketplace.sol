@@ -6,6 +6,7 @@ import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /* Events ********/
 
@@ -20,7 +21,7 @@ import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Recei
  * @author BTBMan
  * @notice This is a contract for a marketplace for NFTs
  */
-contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard {
+contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard, Ownable {
     ////////////////////////////////////
     // Type declarations              //
     ////////////////////////////////////
@@ -74,7 +75,7 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard {
         _;
     }
 
-    constructor() ERC721("Awesome NFT", "AN") {
+    constructor() Ownable(msg.sender) ERC721("Awesome NFT", "AN") {
         s_owner = payable(msg.sender);
     }
 
@@ -138,6 +139,10 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard {
         seller.transfer(msg.value);
 
         emit MarketItemPurchased({tokenId: tokenId, buyer: msg.sender, seller: seller, price: item.price});
+    }
+
+    function withdraw() external nonReentrant onlyOwner {
+        s_owner.transfer(address(this).balance);
     }
 
     function onERC721Received(address, address from, uint256, bytes calldata) external pure override returns (bytes4) {

@@ -5,6 +5,7 @@ import {Test, console} from "forge-std/Test.sol";
 import {NFTMarketplace} from "../src/NFTMarketplace.sol";
 import {NFTMarketplaceScript} from "../script/NFTMarketplace.s.sol";
 import {HelperConfig, IHelperConfig} from "../script/HelperConfig.s.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract NFTMarketplaceTest is Test, IHelperConfig {
     NetworkConfig public activeNetworkConfig;
@@ -90,5 +91,24 @@ contract NFTMarketplaceTest is Test, IHelperConfig {
         assertEq(marketItem.owner, user);
         assertEq(marketItem.sold, true);
         assertEq(marketItem.seller, address(0));
+    }
+
+    function testWithdraw() public createMarketItem {
+        uint256 startNFTMarketplaceBalance = address(nftMarketplace).balance;
+        uint256 startOwnerBalance = nftMarketplace.owner().balance;
+
+        vm.startPrank(nftMarketplace.owner());
+        nftMarketplace.withdraw();
+        vm.stopPrank();
+
+        assertEq(address(nftMarketplace).balance, startNFTMarketplaceBalance - listingFee);
+        assertEq(nftMarketplace.owner().balance, startOwnerBalance + listingFee);
+    }
+
+    function testWithdrawOnlyOwner() public createMarketItem {
+        vm.startPrank(user);
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, user));
+        nftMarketplace.withdraw();
+        vm.stopPrank();
     }
 }
