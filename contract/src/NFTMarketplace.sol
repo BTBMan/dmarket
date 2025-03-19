@@ -175,6 +175,18 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard, O
         return sellingList;
     }
 
+    function getSellingListByOwner(address owner) public view returns (MarketItem[] memory) {
+        MarketItem[] memory sellingList = new MarketItem[](s_tokenIds);
+
+        for (uint256 i = 0; i < s_tokenIds; i++) {
+            if (s_marketItems[i].owner == address(0) && s_marketItems[i].seller == owner) {
+                sellingList[i] = s_marketItems[i];
+            }
+        }
+
+        return sellingList;
+    }
+
     function getNFTsByOwner(address owner) public view returns (MarketItem[] memory) {
         MarketItem[] memory ownerNFTs = new MarketItem[](s_tokenIds);
 
