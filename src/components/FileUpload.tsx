@@ -26,6 +26,20 @@ const FileUpload = forwardRef<HTMLInputElement, Props>(
     const [previews, setPreviews] = useState<string[]>([])
     const fileInputRef = useRef<HTMLInputElement>(null)
 
+    // 临时上传
+    const temporaryUpload = async (files: File[]) => {
+      const formData = new FormData()
+      formData.append('file', files[0])
+
+      const response = await fetch('/api/pinata/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await response.json()
+      console.log(data)
+    }
+
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
       if (e.target.files && e.target.files.length > 0) {
         const selectedFiles = Array.from(e.target.files)
@@ -40,6 +54,8 @@ const FileUpload = forwardRef<HTMLInputElement, Props>(
         setPreviews(newPreviews)
 
         props.onChange?.(newFiles)
+
+        temporaryUpload(newFiles)
       }
     }
 

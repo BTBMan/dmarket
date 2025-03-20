@@ -15,6 +15,7 @@ export default antfu(
       'react-dom/no-missing-button-type': 'off',
       '@next/next/no-img-element': 'off',
       'style/jsx-self-closing-comp': 'warn',
+      'unused-imports/no-unused-vars': ['error', { caughtErrors: 'none' }],
     },
   },
 ).prepend(
