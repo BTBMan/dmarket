@@ -34,7 +34,23 @@ export default function NFTForm() {
   })
 
   function onSubmit(_values: FieldValues) {
-    // console.log(_values)
+    console.log(_values)
+  }
+
+  // 临时上传
+  const temporaryUpload = async (files: File[]) => {
+    const formData = new FormData()
+    formData.append('file', files[0])
+    formData.append('a', 'aa')
+    formData.append('b', 'bb')
+
+    const response = await fetch('/api/pinata/upload-nft', {
+      method: 'POST',
+      body: formData,
+    })
+
+    const data = await response.json()
+    console.log(data)
   }
 
   return (

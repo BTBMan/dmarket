@@ -1,11 +1,27 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { pinata } from '@/lib/pinata'
 
-// Interface here...
+export interface UploadNftRequestData {
+  name: string
+  description: string
+  file: File
+  attributes?: Record<string, any>[]
+}
+
+export interface UploadNftResponseData {
+  url: string
+}
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
+    const data: UploadNftRequestData = Object.entries(Object.fromEntries(formData.entries())).reduce((init, [key, value]) => {
+      init[key] = value
+      return init
+    }, {} as any)
+
+    console.log(data)
+
     const file = formData.get('file') as File
     const keyValues = Object.entries(Object.fromEntries(formData.entries())).reduce((init, [key, value]) => {
       if (key !== 'file') {
@@ -22,7 +38,7 @@ export async function POST(request: NextRequest) {
     })
     const url = await pinata.gateways.public.convert(keyValuesCid)
 
-    return NextResponse.json({ url }, { status: 200 })
+    return NextResponse.json<UploadNftResponseData>({ url }, { status: 200 })
   }
   catch (error) {
     return NextResponse.json(
