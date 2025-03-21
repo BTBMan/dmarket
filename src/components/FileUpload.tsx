@@ -30,8 +30,10 @@ const FileUpload = forwardRef<HTMLInputElement, Props>(
     const temporaryUpload = async (files: File[]) => {
       const formData = new FormData()
       formData.append('file', files[0])
+      formData.append('a', 'aa')
+      formData.append('b', 'bb')
 
-      const response = await fetch('/api/pinata/upload', {
+      const response = await fetch('/api/pinata/upload-nft', {
         method: 'POST',
         body: formData,
       })
