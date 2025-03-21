@@ -11,10 +11,13 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.formData()
     const file = data.get('file') as File
-    const { cid } = await pinata.upload.public.file(file)
-    const url = await pinata.gateways.public.convert(cid)
+    const res = await pinata.upload.public.file(file).keyvalues({
+      a: 'aa',
+      b: 'bb',
+    })
+    const url = await pinata.gateways.public.convert(res.cid)
 
-    return NextResponse.json({ url }, { status: 200 })
+    return NextResponse.json({ url, res }, { status: 200 })
   }
   catch (error) {
     return NextResponse.json(
