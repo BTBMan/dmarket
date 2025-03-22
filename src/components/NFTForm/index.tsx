@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import FileUpload from '@/components/FileUpload'
+import type { UploadNftRequestData } from '@/app/api/pinata/upload-nft/route'
 
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }).max(20),
@@ -33,24 +34,28 @@ export default function NFTForm() {
     },
   })
 
-  function onSubmit(_values: FieldValues) {
-    console.log(_values)
+  async function onSubmit(values: FieldValues) {
+    const { url } = await uploadNft(values)
+    await mintNft(values.ethPrice, url)
   }
 
-  // 临时上传
-  const temporaryUpload = async (files: File[]) => {
+  async function uploadNft(data: FieldValues) {
     const formData = new FormData()
-    formData.append('file', files[0])
-    formData.append('a', 'aa')
-    formData.append('b', 'bb')
+    formData.append('image', data.image[0])
+    formData.append('name', data.name)
+    formData.append('description', data.description)
 
     const response = await fetch('/api/pinata/upload-nft', {
       method: 'POST',
       body: formData,
     })
 
-    const data = await response.json()
-    console.log(data)
+    return await response.json()
+  }
+
+  // TODO Mint NFT
+  async function mintNft(price: string, tokenUri: string) {
+    console.log(price, tokenUri)
   }
 
   return (
