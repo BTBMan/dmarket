@@ -2,8 +2,7 @@
 -include .env.local
 
 # Constants #########################################################
-NFT_SCRIPT := script/NFT.s.sol:NFTScript
-NFT_MARKET_SCRIPT := script/NFTMarket.s.sol:NFTMarketScript
+NFT_MARKETPLACE_SCRIPT := contract/script/NFTMarketplace.s.sol:NFTMarketplaceScript
 
 NETWORK_ARGS :=
 
@@ -21,7 +20,6 @@ endif
 # Aliases ###########################################################
 build:; forge build
 
-deploy-nft:; @forge script $(NFT_SCRIPT) $(NETWORK_ARGS)
-deploy-nft-market:; @forge script $(NFT_MARKET_SCRIPT) $(NETWORK_ARGS)
+deploy-nft-marketplace:; @forge script $(NFT_MARKETPLACE_SCRIPT) $(NETWORK_ARGS) && esno scripts/generate-abi.ts $(NFT_MARKETPLACE_SCRIPT)
 
 test:; @forge test
