@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const OUTPUT_DIR = './src/abis'
+const OUTPUT_DIR = './src/contract-data'
 const scriptPath = process.argv[2]
 
 // Ensure script path is provided
@@ -60,13 +60,13 @@ try {
   const abi = JSON.parse(fs.readFileSync(abiFile, 'utf8')).abi
 
   // Create ABI file
-  const abiFileContent = {
+  const jsonData = JSON.stringify({
     address: contractAddress,
     abi,
-  }
-
-  const outputFile = path.join(OUTPUT_DIR, `${contractName}.abi.json`)
-  fs.writeFileSync(outputFile, JSON.stringify(abiFileContent, null, 2))
+  }, null, 2)
+  const contractData = `export const ${contractName} = ${jsonData} as const`
+  const outputFile = path.join(OUTPUT_DIR, `${contractName}.ts`)
+  fs.writeFileSync(outputFile, contractData)
 
   console.log(`ABI file saved to ${outputFile}`)
 }

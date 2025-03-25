@@ -6,7 +6,7 @@ const compat = new FlatCompat()
 export default antfu(
   {
     react: true,
-    ignores: ['src/components/ui', 'src/abis'],
+    ignores: ['src/components/ui', 'src/contract-data'],
   },
   {
     rules: {

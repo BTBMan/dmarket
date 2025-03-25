@@ -3,11 +3,13 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useReadContract, useWriteContract } from 'wagmi'
+import { parseEther } from 'viem'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import FileUpload from '@/components/FileUpload'
-import type { UploadNftRequestData } from '@/app/api/pinata/upload-nft/route'
+import { NFTMarketplace } from '@/contract-data/NFTMarketplace'
 
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }).max(20),
@@ -34,9 +36,12 @@ export default function NFTForm() {
     },
   })
 
+  const { data: listingFee } = useReadContract({ ...NFTMarketplace, functionName: 'getListingFee' })
+
   async function onSubmit(values: FieldValues) {
-    const { url } = await uploadNft(values)
-    await mintNft(values.ethPrice, url)
+    // console.log(ret)
+    // const { url } = await uploadNft(values)
+    await mintNft(values.ethPrice, 'url')
   }
 
   async function uploadNft(data: FieldValues) {
@@ -53,9 +58,15 @@ export default function NFTForm() {
     return await response.json()
   }
 
-  // TODO Mint NFT
+  // Mint NFT
+  const { writeContract } = useWriteContract()
   async function mintNft(price: string, tokenUri: string) {
-    console.log(price, tokenUri)
+    writeContract({
+      ...NFTMarketplace,
+      functionName: 'createMarketItem',
+      args: [parseEther(price), tokenUri],
+      value: listingFee,
+    })
   }
 
   return (
