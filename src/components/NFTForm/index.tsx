@@ -40,17 +40,17 @@ export default function NFTForm() {
 
   async function onSubmit(values: FieldValues) {
     // console.log(ret)
-    // const { url } = await uploadNft(values)
-    await mintNft(values.ethPrice, 'url')
+    // const { url } = await uploadMetadata(values)
+    await mintNFT(values.ethPrice, 'url')
   }
 
-  async function uploadNft(data: FieldValues) {
+  async function uploadMetadata(data: FieldValues) {
     const formData = new FormData()
     formData.append('image', data.image[0])
     formData.append('name', data.name)
     formData.append('description', data.description)
 
-    const response = await fetch('/api/pinata/upload-nft', {
+    const response = await fetch('/api/pinata/upload-metadata', {
       method: 'POST',
       body: formData,
     })
@@ -60,7 +60,7 @@ export default function NFTForm() {
 
   // Mint NFT
   const { writeContract } = useWriteContract()
-  async function mintNft(price: string, tokenUri: string) {
+  async function mintNFT(price: string, tokenUri: string) {
     writeContract({
       ...NFTMarketplace,
       functionName: 'createMarketItem',

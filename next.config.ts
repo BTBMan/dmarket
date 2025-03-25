@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
       {
         hostname: 'i.seadn.io',
       },
+      {
+        hostname: '*.mypinata.cloud',
+      },
     ],
   },
 }

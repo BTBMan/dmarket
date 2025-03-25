@@ -1,11 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { pinata } from '@/lib/pinata'
 
-export interface UploadNftRequestData<Image = File> {
-  name: string
-  description: string
+export interface UploadNftRequestData<Image = File> extends Omit<NFTMetadata, 'image'> {
   image: Image
-  attributes?: Record<string, any>[]
 }
 
 export interface UploadNftResponseData {
@@ -23,11 +20,11 @@ export async function POST(request: NextRequest) {
     const file = formData.get('image') as File
     const { cid: fileCid } = await pinata.upload.public.file(file)
     const fileUrl = await pinata.gateways.public.convert(fileCid)
-    const { cid: keyValuesCid } = await pinata.upload.public.json({
+    const { cid: metadataCid } = await pinata.upload.public.json({
       ...data,
       image: fileUrl,
     })
-    const url = await pinata.gateways.public.convert(keyValuesCid)
+    const url = await pinata.gateways.public.convert(metadataCid)
 
     return NextResponse.json<UploadNftResponseData>({ url }, { status: 200 })
   }

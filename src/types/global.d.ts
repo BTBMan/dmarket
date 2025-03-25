@@ -31,6 +31,13 @@ declare global {
       NEXT_PUBLIC_GATEWAY_URL: string
     }
   }
+
+  interface NFTMetadata {
+    name: string
+    description: string
+    image: string
+    attributes?: Record<string, any>[]
+  }
 }
 
 export {}

@@ -12,8 +12,12 @@ export default function ProfileLayout({ children }: PropsWithChildren<{ params: 
       href: '/profile',
     },
     {
-      label: 'My NFTs',
-      href: '/profile/nfts',
+      label: 'My listing NFTs',
+      href: '/profile/listing-nfts',
+    },
+    {
+      label: 'My Own NFTs',
+      href: '/profile/own-nfts',
     },
   ]
 
