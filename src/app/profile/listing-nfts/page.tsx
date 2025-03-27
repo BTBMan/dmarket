@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import NFTCard from '@/components/NFTCard'
 import DialogForm from '@/components/NFTForm/DialogForm'
 import { NFTMarketplace } from '@/contract-data/NFTMarketplace'
+import Skeleton from '@/components/Skeleton'
 
 export interface NFtItem {
   tokenId: bigint
@@ -62,6 +63,7 @@ export default function NftsPage() {
       <div className="flex justify-end mb-[var(--main-padding)]">
         <DialogForm />
       </div>
+      <Skeleton type="card" />
       <div className="grid grid-cols-5 gap-4 max-xl:grid-cols-4">
         { (nftList || []).map(item => (
           <NFTCard key={item.tokenId} {...item} />

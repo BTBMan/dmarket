@@ -16,6 +16,7 @@ export default antfu(
       '@next/next/no-img-element': 'off',
       'style/jsx-self-closing-comp': 'warn',
       'unused-imports/no-unused-vars': ['warn', { caughtErrors: 'none', argsIgnorePattern: '^_' }],
+      'style/jsx-curly-spacing': ['error', { when: 'never', children: { when: 'always' } }],
     },
   },
 ).prepend(
