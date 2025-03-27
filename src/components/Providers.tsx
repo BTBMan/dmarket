@@ -20,7 +20,7 @@ export default function Providers({ children }: PropsWithChildren) {
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            { children }
           </ThemeProvider>
         </RainbowKitProvider>
       </QueryClientProvider>

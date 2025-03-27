@@ -169,7 +169,7 @@ export default function NFTForm({ onMinted }: Props) {
           />
           <div className="flex justify-end">
             <Button type="submit" disabled={isMinting}>
-              {isMinting ? <><Loader2 className="animate-spin" /> Minting...</> : 'Mint'}
+              { isMinting ? <><Loader2 className="animate-spin" /> Minting...</> : 'Mint' }
             </Button>
           </div>
         </form>

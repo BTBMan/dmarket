@@ -14,9 +14,9 @@ export default function Collection({ isCollection, onToggleCollection }: Props) 
 
   return (
     <div className="cursor-pointer" onClick={toggleCollection}>
-      {!isCollection
+      { !isCollection
         ? <StarIcon className="text-gray-400 hover:text-yellow-500" />
-        : <StarFilledIcon className="text-yellow-500" />}
+        : <StarFilledIcon className="text-yellow-500" /> }
     </div>
   )
 }

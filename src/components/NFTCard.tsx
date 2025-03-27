@@ -28,9 +28,9 @@ export default function NFTCard({ className, metadata, tokenId, price, sold, sel
         <CardFooter className="p-4">
           <div className="w-full">
             <div className="flex items-center justify-between text-[16px]">
-              <h3>{metadata.name} #{tokenId}</h3>
-              <div>{formatEther(price)} ETH</div>
-              {sold}
+              <h3>{ metadata.name } #{ tokenId }</h3>
+              <div>{ formatEther(price) } ETH</div>
+              { sold }
             </div>
             { (!sold && seller !== address) && <Button className="w-full mt-4 text-[16px]">BUY</Button> }
           </div>

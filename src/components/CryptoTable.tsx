@@ -35,13 +35,13 @@ export default async function CryptoTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {(res.data || []).map((item: any, index: number) => (
+          { (res.data || []).map((item: any, index: number) => (
             <Link href={`/currencies/${item.slug}`} legacyBehavior key={item.id}>
               <TableRow className="cursor-pointer">
                 <TableCell className="text-right">
                   <div className="flex items-center justify-between">
                     <Collection isCollection={false} />
-                    {index + 1}
+                    { index + 1 }
                   </div>
                 </TableCell>
                 <TableCell>
@@ -53,12 +53,12 @@ export default async function CryptoTable() {
                       width={24}
                       height={24}
                     />
-                    <span>{item.name}</span>
-                    <span className="text-gray-400">{item.symbol}</span>
+                    <span>{ item.name }</span>
+                    <span className="text-gray-400">{ item.symbol }</span>
                   </div>
                 </TableCell>
                 <TableCell className="text-right">
-                  {formatCurrency(item.quote.USD.price)}
+                  { formatCurrency(item.quote.USD.price) }
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-end">
@@ -85,17 +85,17 @@ export default async function CryptoTable() {
                   </div>
                 </TableCell>
                 <TableCell className="text-right">
-                  {formatCurrency(item.quote.USD.market_cap, { maximumFractionDigits: 0 })}
+                  { formatCurrency(item.quote.USD.market_cap, { maximumFractionDigits: 0 }) }
                 </TableCell>
                 <TableCell className="text-right">
-                  <div>{formatCurrency(item.quote.USD.volume_24h, { maximumFractionDigits: 0 })}</div>
+                  <div>{ formatCurrency(item.quote.USD.volume_24h, { maximumFractionDigits: 0 }) }</div>
                   <div className="text-[12px] text-gray-300">
-                    {formatNumberToShort(item.quote.USD.volume_24h / item.quote.USD.price)} {item.symbol}
+                    { formatNumberToShort(item.quote.USD.volume_24h / item.quote.USD.price) } { item.symbol }
                   </div>
                 </TableCell>
                 <TableCell className="text-right">
                   <div>
-                    {formatNumberToShort(item.circulating_supply)} {item.symbol}
+                    { formatNumberToShort(item.circulating_supply) } { item.symbol }
                   </div>
                 </TableCell>
                 <TableCell className="text-right">
@@ -109,7 +109,7 @@ export default async function CryptoTable() {
                 </TableCell>
               </TableRow>
             </Link>
-          ))}
+          )) }
         </TableBody>
       </Table>
     </div>

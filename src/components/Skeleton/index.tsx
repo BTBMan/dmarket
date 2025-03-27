@@ -7,7 +7,7 @@ interface Props {
 export default function Skeleton({ type }: Props) {
   return (
     <div>
-      {type === 'card' && <Card />}
+      { type === 'card' && <Card /> }
     </div>
   )
 }

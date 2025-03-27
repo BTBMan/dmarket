@@ -36,10 +36,10 @@ function AccountInfo({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <div className="cursor-pointer" onClick={onAccountClick}>{account.displayName}</div>
-        {chain.hasIcon && (
+        <div className="cursor-pointer" onClick={onAccountClick}>{ account.displayName }</div>
+        { chain.hasIcon && (
           <div>
-            {chain.iconUrl && (
+            { chain.iconUrl && (
               <Image
                 className="cursor-pointer"
                 src={chain.iconUrl}
@@ -48,12 +48,12 @@ function AccountInfo({
                 height={20}
                 onClick={onChainClick}
               />
-            )}
+            ) }
           </div>
-        )}
+        ) }
       </div>
       <div className="mt-[4px]">
-        <span className="text-[18px] font-bold">{account.displayBalance}</span>
+        <span className="text-[18px] font-bold">{ account.displayBalance }</span>
       </div>
     </div>
   )
@@ -103,7 +103,7 @@ export default function ConnectButton() {
   return (
     <div>
       <RainbowConnectButton.Custom>
-        {buttonContent}
+        { buttonContent }
       </RainbowConnectButton.Custom>
     </div>
   )

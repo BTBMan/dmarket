@@ -28,14 +28,14 @@ export default function ProfileLayout({ children }: PropsWithChildren<{ params: 
       <h1>Some text here...</h1>
       <div className="pt-[var(--main-padding)]">
         <div className="flex items-center space-x-6 text-gray-500 [&>a:hover]:text-foreground">
-          {links.map(link => (
+          { links.map(link => (
             <Link className={clsx('leading-[40px] relative after:absolute after:w-full after:h-[2px] after:bg-foreground after:bottom-0 after:left-0 after:opacity-0 after:transition-opacity after:duration-300', { 'text-foreground': pathname === link.href, 'after:opacity-100': pathname === link.href })} key={link.href} href={link.href}>
-              {link.label}
+              { link.label }
             </Link>
-          ))}
+          )) }
         </div>
         <div className="mt-[var(--main-padding)]">
-          {children}
+          { children }
         </div>
       </div>
     </div>

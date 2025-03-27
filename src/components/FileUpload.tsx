@@ -76,8 +76,8 @@ const FileUpload = forwardRef<HTMLInputElement, Props>(
     return (
       <div className={cn('space-y-4', className)}>
         <div className="flex flex-wrap gap-4">
-          {/* File cards with previews */}
-          {previews.map((preview, index) => (
+          { /* File cards with previews */ }
+          { previews.map((preview, index) => (
             <div key={preview} className="relative h-32 w-32 rounded-md border border-border bg-card overflow-hidden group">
               <Image src={preview} alt={`Preview ${index}`} fill className="object-cover" />
               <Button
@@ -91,10 +91,10 @@ const FileUpload = forwardRef<HTMLInputElement, Props>(
                 <span className="sr-only">Remove</span>
               </Button>
             </div>
-          ))}
+          )) }
 
-          {/* Upload card */}
-          {files.length < maxFiles && (
+          { /* Upload card */ }
+          { files.length < maxFiles && (
             <div
               onClick={handleClick}
               className="flex h-32 w-32 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-border bg-muted/50 text-muted-foreground hover:bg-muted transition-colors"
@@ -110,7 +110,7 @@ const FileUpload = forwardRef<HTMLInputElement, Props>(
                 multiple={maxFiles > 1}
               />
             </div>
-          )}
+          ) }
         </div>
       </div>
     )

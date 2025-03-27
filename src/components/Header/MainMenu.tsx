@@ -38,9 +38,9 @@ export default function MainMenu() {
           <Avatar>
             <AvatarImage src={ensAvatar || ''} />
             <AvatarFallback>
-              {address
+              { address
                 ? <div className="w-full h-full flex items-center justify-center text-[20px] bg-[#FAE388]">🙀</div>
-                : <PersonIcon className="w-[20px] h-[20px]" />}
+                : <PersonIcon className="w-[20px] h-[20px]" /> }
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
@@ -48,7 +48,7 @@ export default function MainMenu() {
           <DropdownMenuLabel>
             <ConnectButton />
           </DropdownMenuLabel>
-          {isConnected && (
+          { isConnected && (
             <div className="[&>a[role='menuitem']]:leading-[30px] [&>a[role='menuitem']]:hover:cursor-pointer">
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
@@ -57,7 +57,7 @@ export default function MainMenu() {
                 </Link>
               </DropdownMenuItem>
             </div>
-          )}
+          ) }
           <DropdownMenuSeparator />
           <DropdownMenuLabel>
             <Tabs
@@ -67,11 +67,11 @@ export default function MainMenu() {
               }}
             >
               <TabsList className="w-full">
-                {themes.map(theme => (
+                { themes.map(theme => (
                   <TabsTrigger className="flex-1" key={theme.key} value={theme.key}>
-                    {theme.icon}
+                    { theme.icon }
                   </TabsTrigger>
-                ))}
+                )) }
               </TabsList>
             </Tabs>
           </DropdownMenuLabel>
