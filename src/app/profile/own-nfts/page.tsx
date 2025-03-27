@@ -25,9 +25,9 @@ export default function NftsPage() {
   useEffect(() => {
     const handleNfts = async () => {
       const list = await Promise.all(
-        (nfts || []).map(async (item, _idx) => {
-          // const tokenUri = (tokenUris || [])[idx].result
-          const metadata: NFTMetadata = await fetch('https://blush-accessible-wolf-315.mypinata.cloud/ipfs/bafkreiawe24ncwwg67y4x456s5ku36meyvujcsr37xpjug2isvr2xjemjy').then(res => res.json())
+        (nfts || []).map(async (item, idx) => {
+          const tokenUri = (tokenUris || [])[idx].result as string
+          const metadata: NFTMetadata = await fetch(tokenUri).then(res => res.json())
 
           return {
             tokenId: item.tokenId,

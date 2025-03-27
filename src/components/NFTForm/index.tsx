@@ -3,13 +3,20 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useReadContract, useWriteContract } from 'wagmi'
+import { useReadContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
 import { parseEther } from 'viem'
+import { useEffect, useState } from 'react'
+import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import FileUpload from '@/components/FileUpload'
 import { NFTMarketplace } from '@/contract-data/NFTMarketplace'
+
+interface Props {
+  onMinted?: () => void
+}
 
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }).max(20),
@@ -25,7 +32,8 @@ const leftSpace = {
   ml: 'ml-[88px]',
 }
 
-export default function NFTForm() {
+export default function NFTForm({ onMinted }: Props) {
+  const [isMinting, setIsMinting] = useState(false)
   const form = useForm<FieldValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,10 +46,11 @@ export default function NFTForm() {
 
   const { data: listingFee } = useReadContract({ ...NFTMarketplace, functionName: 'getListingFee' })
 
-  async function onSubmit(values: FieldValues) {
-    // console.log(ret)
+  async function onMint(values: FieldValues) {
+    setIsMinting(true)
+    // TODO upload metadata
     // const { url } = await uploadMetadata(values)
-    await mintNFT(values.ethPrice, 'https://blush-accessible-wolf-315.mypinata.cloud/ipfs/bafkreiawe24ncwwg67y4x456s5ku36meyvujcsr37xpjug2isvr2xjemjy')
+    mintNFT(values.ethPrice, 'https://blush-accessible-wolf-315.mypinata.cloud/ipfs/bafkreiawe24ncwwg67y4x456s5ku36meyvujcsr37xpjug2isvr2xjemjy')
   }
 
   async function uploadMetadata(data: FieldValues) {
@@ -59,7 +68,24 @@ export default function NFTForm() {
   }
 
   // Mint NFT
-  const { writeContract } = useWriteContract()
+  const { writeContract, data: tx, isError } = useWriteContract()
+  const { isSuccess } = useWaitForTransactionReceipt({
+    hash: tx,
+  })
+  useEffect(() => {
+    if (isError) {
+      setIsMinting(false)
+    }
+    if (isSuccess) {
+      setIsMinting(false)
+      toast.success('NFT minted successfully', {
+        position: 'top-center',
+      })
+      onMinted?.()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, isError])
+
   async function mintNFT(price: string, tokenUri: string) {
     writeContract({
       ...NFTMarketplace,
@@ -72,7 +98,7 @@ export default function NFTForm() {
   return (
     <div>
       <Form {...form}>
-        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+        <form className="space-y-4" onSubmit={form.handleSubmit(onMint)}>
           <FormField
             control={form.control}
             name="name"
@@ -142,7 +168,9 @@ export default function NFTForm() {
             }}
           />
           <div className="flex justify-end">
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={isMinting}>
+              {isMinting ? <><Loader2 className="animate-spin" /> Minting...</> : 'Mint'}
+            </Button>
           </div>
         </form>
       </Form>

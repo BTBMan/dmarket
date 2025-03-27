@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import '../styles/globals.css'
 import Header from '@/components/Header'
 import Providers from '@/components/Providers'
+import { Toaster } from '@/components/ui/sonner'
 
 export const metadata: Metadata = {
   title: 'Decentralized Market',
@@ -24,6 +25,7 @@ export default function RootLayout({
             </main>
           </div>
         </Providers>
+        <Toaster richColors />
       </body>
     </html>
   )
