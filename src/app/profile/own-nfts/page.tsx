@@ -1,60 +1,35 @@
 'use client'
 
-import { useAccount, useReadContract, useReadContracts } from 'wagmi'
-import { useEffect, useState } from 'react'
-import type { NFtItem } from '../listing-nfts/page'
+import { useAccount } from 'wagmi'
 import NFTCard from '@/components/NFTCard'
-import { NFTMarketplace } from '@/contract-data/NFTMarketplace'
+import Skeleton from '@/components/Skeleton'
+import Empty from '@/components/Empty'
+import { useNFTList } from '@/hooks/useNFTList'
 
-export default function NftsPage() {
-  const [nftList, setNftList] = useState<NFtItem[]>([])
+export default function OwnNFTsPage() {
   const { address } = useAccount()
-  const { data: nfts } = useReadContract({
-    ...NFTMarketplace,
+  const { isLoading, nftList } = useNFTList({
     functionName: 'getNFTsByOwner',
     args: [address!],
   })
-  const { data: tokenUris } = useReadContracts({
-    contracts: (nfts || []).map(item => ({
-      ...NFTMarketplace,
-      functionName: 'tokenURI',
-      args: [item.tokenId],
-    })),
-  })
 
-  useEffect(() => {
-    const handleNfts = async () => {
-      const list = await Promise.all(
-        (nfts || []).map(async (item, idx) => {
-          const tokenUri = (tokenUris || [])[idx].result as string
-          const metadata: NFTMetadata = await fetch(tokenUri).then(res => res.json())
-
-          return {
-            tokenId: item.tokenId,
-            price: item.price,
-            seller: item.seller,
-            owner: item.owner,
-            sold: item.sold,
-            metadata,
-          }
-        }),
-      )
-
-      setNftList(list)
+  const listRender = () => {
+    if (isLoading) {
+      return <Skeleton type="card" />
     }
 
-    if (nfts?.length && tokenUris?.length) {
-      handleNfts()
+    if (!nftList.length) {
+      return <Empty />
     }
-  }, [nfts, tokenUris])
 
-  return (
-    <div>
+    return (
       <div className="grid grid-cols-5 gap-4 max-xl:grid-cols-4">
         { (nftList || []).map(item => (
           <NFTCard key={item.tokenId} {...item} />
         )) }
       </div>
-    </div>
-  )
+    )
+  }
+
+  return listRender()
 }

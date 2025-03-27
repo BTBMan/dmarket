@@ -18,7 +18,7 @@ export default function Empty({ className, text = 'Nothing here ...', icon = DEF
   })
 
   return (
-    <div className={cn('flex justify-center', className)}>
+    <div className={cn('flex justify-center py-10', className)}>
       <div className="flex flex-col items-center">
         <div className="mb-4 text-gray-400">
           { iconToRender }
