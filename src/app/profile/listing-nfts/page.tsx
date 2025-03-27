@@ -6,6 +6,7 @@ import NFTCard from '@/components/NFTCard'
 import DialogForm from '@/components/NFTForm/DialogForm'
 import { NFTMarketplace } from '@/contract-data/NFTMarketplace'
 import Skeleton from '@/components/Skeleton'
+import Empty from '@/components/Empty'
 
 export interface NFtItem {
   tokenId: bigint
@@ -17,14 +18,15 @@ export interface NFtItem {
 }
 
 export default function NftsPage() {
+  const [isLoading, setIsLoading] = useState(true)
   const [nftList, setNftList] = useState<NFtItem[]>([])
   const { address } = useAccount()
-  const { data: nfts } = useReadContract({
+  const { data: nfts, refetch: refetchNfts } = useReadContract({
     ...NFTMarketplace,
     functionName: 'getSellingListBySeller',
     args: [address!],
   })
-  const { data: tokenUris } = useReadContracts({
+  const { data: tokenUris, refetch: refetchTokenUris } = useReadContracts({
     contracts: (nfts || []).map(item => ({
       ...NFTMarketplace,
       functionName: 'tokenURI',
@@ -34,6 +36,7 @@ export default function NftsPage() {
 
   useEffect(() => {
     const handleNfts = async () => {
+      setIsLoading(true)
       const list = await Promise.all(
         (nfts || []).map(async (item, idx) => {
           const tokenUri = (tokenUris || [])[idx].result as string
@@ -50,25 +53,51 @@ export default function NftsPage() {
         }),
       )
 
+      setIsLoading(false)
       setNftList(list)
     }
 
-    if (nfts?.length && tokenUris?.length) {
-      handleNfts()
+    if (nfts) {
+      if (nfts?.length) {
+        if (tokenUris?.length) {
+          handleNfts()
+        }
+      }
+      else {
+        setIsLoading(false)
+      }
     }
   }, [nfts, tokenUris])
 
-  return (
-    <div>
-      <div className="flex justify-end mb-[var(--main-padding)]">
-        <DialogForm />
-      </div>
-      <Skeleton type="card" />
+  const refetch = () => {
+    refetchNfts()
+    refetchTokenUris()
+  }
+
+  const listRender = () => {
+    if (isLoading) {
+      return <Skeleton type="card" />
+    }
+
+    if (!nftList.length) {
+      return <Empty />
+    }
+
+    return (
       <div className="grid grid-cols-5 gap-4 max-xl:grid-cols-4">
         { (nftList || []).map(item => (
           <NFTCard key={item.tokenId} {...item} />
         )) }
       </div>
+    )
+  }
+
+  return (
+    <div>
+      <div className="flex justify-end mb-[var(--main-padding)]">
+        <DialogForm onMinted={refetch} />
+      </div>
+      { listRender() }
     </div>
   )
 }
