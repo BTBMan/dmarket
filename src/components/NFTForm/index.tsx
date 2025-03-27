@@ -41,7 +41,7 @@ export default function NFTForm() {
   async function onSubmit(values: FieldValues) {
     // console.log(ret)
     // const { url } = await uploadMetadata(values)
-    await mintNFT(values.ethPrice, 'url')
+    await mintNFT(values.ethPrice, 'https://blush-accessible-wolf-315.mypinata.cloud/ipfs/bafkreiawe24ncwwg67y4x456s5ku36meyvujcsr37xpjug2isvr2xjemjy')
   }
 
   async function uploadMetadata(data: FieldValues) {

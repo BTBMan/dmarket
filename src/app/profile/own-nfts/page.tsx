@@ -14,7 +14,6 @@ export default function NftsPage() {
     functionName: 'getNFTsByOwner',
     args: [address!],
   })
-  console.log(nfts)
   const { data: tokenUris } = useReadContracts({
     contracts: (nfts || []).map(item => ({
       ...NFTMarketplace,

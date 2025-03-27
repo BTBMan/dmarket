@@ -1,5 +1,5 @@
 export const NFTMarketplace = {
-  "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+  "address": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
   "abi": [
     {
       "type": "constructor",
@@ -60,6 +60,46 @@ export const NFTMarketplace = {
       ],
       "outputs": [],
       "stateMutability": "payable"
+    },
+    {
+      "type": "function",
+      "name": "getAllSellingList",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple[]",
+          "internalType": "struct NFTMarketplace.MarketItem[]",
+          "components": [
+            {
+              "name": "tokenId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "price",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "seller",
+              "type": "address",
+              "internalType": "address payable"
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address payable"
+            },
+            {
+              "name": "sold",
+              "type": "bool",
+              "internalType": "bool"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
     },
     {
       "type": "function",
@@ -187,50 +227,10 @@ export const NFTMarketplace = {
     },
     {
       "type": "function",
-      "name": "getSellingList",
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "",
-          "type": "tuple[]",
-          "internalType": "struct NFTMarketplace.MarketItem[]",
-          "components": [
-            {
-              "name": "tokenId",
-              "type": "uint256",
-              "internalType": "uint256"
-            },
-            {
-              "name": "price",
-              "type": "uint256",
-              "internalType": "uint256"
-            },
-            {
-              "name": "seller",
-              "type": "address",
-              "internalType": "address payable"
-            },
-            {
-              "name": "owner",
-              "type": "address",
-              "internalType": "address payable"
-            },
-            {
-              "name": "sold",
-              "type": "bool",
-              "internalType": "bool"
-            }
-          ]
-        }
-      ],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
-      "name": "getSellingListByOwner",
+      "name": "getSellingListBySeller",
       "inputs": [
         {
-          "name": "owner",
+          "name": "seller",
           "type": "address",
           "internalType": "address"
         }

@@ -141,6 +141,30 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard, O
         emit MarketItemPurchased({tokenId: tokenId, buyer: msg.sender, seller: seller, price: item.price});
     }
 
+    function filterCondition(address owner, address seller, uint256 i) internal view returns (bool) {
+        return (owner == address(0) || s_marketItems[i].owner == owner)
+            && (seller == address(0) || s_marketItems[i].seller == seller);
+    }
+
+    function filterMarketItem(address owner, address seller) internal view returns (MarketItem[] memory) {
+        uint256 length = 0;
+
+        for (uint256 i = 0; i < s_tokenIds; i++) {
+            if (filterCondition(owner, seller, i)) {
+                length++;
+            }
+        }
+
+        MarketItem[] memory marketItems = new MarketItem[](length);
+        for (uint256 i = 0; i < s_tokenIds; i++) {
+            if (filterCondition(owner, seller, i)) {
+                marketItems[i] = s_marketItems[i];
+            }
+        }
+
+        return marketItems;
+    }
+
     function withdraw() external nonReentrant onlyOwner {
         s_owner.transfer(address(this).balance);
     }
@@ -163,39 +187,15 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard, O
         return s_marketItems[tokenId];
     }
 
-    function getSellingList() public view returns (MarketItem[] memory) {
-        MarketItem[] memory sellingList = new MarketItem[](s_tokenIds);
-
-        for (uint256 i = 0; i < s_tokenIds; i++) {
-            if (s_marketItems[i].owner == address(0)) {
-                sellingList[i] = s_marketItems[i];
-            }
-        }
-
-        return sellingList;
+    function getAllSellingList() public view returns (MarketItem[] memory) {
+        return filterMarketItem(address(0), address(0));
     }
 
-    function getSellingListByOwner(address owner) public view returns (MarketItem[] memory) {
-        MarketItem[] memory sellingList = new MarketItem[](s_tokenIds);
-
-        for (uint256 i = 0; i < s_tokenIds; i++) {
-            if (s_marketItems[i].owner == address(0) && s_marketItems[i].seller == owner) {
-                sellingList[i] = s_marketItems[i];
-            }
-        }
-
-        return sellingList;
+    function getSellingListBySeller(address seller) public view returns (MarketItem[] memory) {
+        return filterMarketItem(address(0), seller);
     }
 
     function getNFTsByOwner(address owner) public view returns (MarketItem[] memory) {
-        MarketItem[] memory ownerNFTs = new MarketItem[](s_tokenIds);
-
-        for (uint256 i = 0; i < s_tokenIds; i++) {
-            if (s_marketItems[i].owner == owner) {
-                ownerNFTs[i] = s_marketItems[i];
-            }
-        }
-
-        return ownerNFTs;
+        return filterMarketItem(owner, address(0));
     }
 }
