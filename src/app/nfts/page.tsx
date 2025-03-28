@@ -6,7 +6,7 @@ import Skeleton from '@/components/Skeleton'
 import { useNFTList } from '@/hooks/useNFTList'
 
 export default function NftsPage() {
-  const { isLoading, nftList } = useNFTList({
+  const { isLoading, nftList, refetch } = useNFTList({
     functionName: 'getAllSellingList',
   })
 
@@ -22,7 +22,7 @@ export default function NftsPage() {
     return (
       <div className="grid grid-cols-5 gap-4 max-xl:grid-cols-4">
         { (nftList || []).map(item => (
-          <NFTCard key={item.tokenId} {...item} />
+          <NFTCard key={item.tokenId} {...item} onBought={refetch} />
         )) }
       </div>
     )

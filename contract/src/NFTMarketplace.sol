@@ -142,13 +142,11 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard, O
     }
 
     function filterCondition(address owner, address seller, uint256 i) internal view returns (bool) {
-        return (owner == address(0) || s_marketItems[i].owner == owner)
-            && (seller == address(0) || s_marketItems[i].seller == seller);
+        return (s_marketItems[i].owner == owner) && (seller == address(0) || s_marketItems[i].seller == seller);
     }
 
     function filterMarketItem(address owner, address seller) internal view returns (MarketItem[] memory) {
         uint256 length = 0;
-
         for (uint256 i = 0; i < s_tokenIds; i++) {
             if (filterCondition(owner, seller, i)) {
                 length++;
@@ -156,9 +154,11 @@ contract NFTMarketplace is ERC721URIStorage, IERC721Receiver, ReentrancyGuard, O
         }
 
         MarketItem[] memory marketItems = new MarketItem[](length);
+        uint256 index = 0;
         for (uint256 i = 0; i < s_tokenIds; i++) {
             if (filterCondition(owner, seller, i)) {
-                marketItems[i] = s_marketItems[i];
+                marketItems[index] = s_marketItems[i];
+                index++;
             }
         }
 

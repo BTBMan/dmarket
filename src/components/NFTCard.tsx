@@ -1,16 +1,52 @@
+'use client'
+
 import Image from 'next/image'
 import { formatEther } from 'viem'
-import { useAccount } from 'wagmi'
+import { useAccount, useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
+import { useEffect, useState } from 'react'
+import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import type { NFtItem } from '@/app/profile/listing-nfts/page'
+import type { NFtItem } from '@/hooks/useNFTList'
+import { NFTMarketplace } from '@/contract-data/NFTMarketplace'
 
 interface Props extends NFtItem {
   className?: string
+  onBought?: () => void
 }
 
-export default function NFTCard({ className, metadata, tokenId, price, sold, seller }: Props) {
+export default function NFTCard({ className, metadata, tokenId, price, sold, seller, onBought }: Props) {
   const { address } = useAccount()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { writeContract, data: tx, isError } = useWriteContract()
+  const { isSuccess } = useWaitForTransactionReceipt({
+    hash: tx,
+  })
+  useEffect(() => {
+    if (isError) {
+      setIsLoading(false)
+    }
+    if (isSuccess) {
+      setIsLoading(false)
+      toast.success('NFT bought successfully', {
+        position: 'top-center',
+      })
+      onBought?.()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, isError])
+
+  const buyNFT = () => {
+    setIsLoading(true)
+    writeContract({
+      ...NFTMarketplace,
+      functionName: 'purchaseMarketItem',
+      args: [tokenId],
+      value: price,
+    })
+  }
 
   return (
     <div className={className}>
@@ -32,7 +68,11 @@ export default function NFTCard({ className, metadata, tokenId, price, sold, sel
               <div>{ formatEther(price) } ETH</div>
               { sold }
             </div>
-            { (!sold && seller !== address) && <Button className="w-full mt-4 text-[16px]">BUY</Button> }
+            { (!sold && seller !== address) && (
+              <Button className="w-full mt-4 text-[16px]" disabled={isLoading} onClick={buyNFT}>
+                { isLoading ? <><Loader2 className="animate-spin" /> Buying...</> : 'BUY' }
+              </Button>
+            ) }
           </div>
         </CardFooter>
       </Card>

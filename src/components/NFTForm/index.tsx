@@ -47,10 +47,11 @@ export default function NFTForm({ onMinted }: Props) {
   const { data: listingFee } = useReadContract({ ...NFTMarketplace, functionName: 'getListingFee' })
 
   async function onMint(values: FieldValues) {
-    setIsMinting(true)
-    // TODO upload metadata
-    // const { url } = await uploadMetadata(values)
-    mintNFT(values.ethPrice, 'https://blush-accessible-wolf-315.mypinata.cloud/ipfs/bafkreiawe24ncwwg67y4x456s5ku36meyvujcsr37xpjug2isvr2xjemjy')
+    try {
+      setIsMinting(true)
+      mintNFT(values.ethPrice, (await uploadMetadata(values)).url)
+    }
+    catch (error) {}
   }
 
   async function uploadMetadata(data: FieldValues) {

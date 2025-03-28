@@ -14,6 +14,7 @@ contract NFTMarketplaceTest is Test, IHelperConfig {
     HelperConfig public helperConfig;
 
     address public user = makeAddr("user");
+    address public buyer = makeAddr("buyer");
 
     uint256 public constant STARTING_BALANCE = 1 ether;
     uint256 public constant ITEM_PRICE = 0.1 ether;
@@ -33,6 +34,7 @@ contract NFTMarketplaceTest is Test, IHelperConfig {
         listingFee = nftMarketplace.getListingFee();
 
         vm.deal(user, STARTING_BALANCE);
+        vm.deal(buyer, STARTING_BALANCE);
     }
 
     function testIncorrectListingFeeWhenCreateMarketItem() public payable {
@@ -81,16 +83,47 @@ contract NFTMarketplaceTest is Test, IHelperConfig {
     }
 
     function testBuyerOwnedTokenAfterSuccessfulPurchaseMarketItem() public createMarketItem {
-        vm.startPrank(user);
+        uint256 startBuyerBalance = buyer.balance;
+        uint256 startUserBalance = user.balance;
+
+        vm.startPrank(buyer);
         nftMarketplace.purchaseMarketItem{value: ITEM_PRICE}(0);
         vm.stopPrank();
 
         NFTMarketplace.MarketItem memory marketItem = nftMarketplace.getMarketItem(0);
 
-        assertEq(nftMarketplace.ownerOf(0), user);
-        assertEq(marketItem.owner, user);
+        assertEq(nftMarketplace.ownerOf(0), buyer);
+        assertEq(marketItem.owner, buyer);
         assertEq(marketItem.sold, true);
         assertEq(marketItem.seller, address(0));
+        assertEq(buyer.balance, startBuyerBalance - ITEM_PRICE);
+        assertEq(user.balance, startUserBalance + ITEM_PRICE);
+    }
+
+    function testAllSellingListAfterSuccessfulCreateMarketItem() public createMarketItem createMarketItem {
+        NFTMarketplace.MarketItem[] memory allSellingList = nftMarketplace.getAllSellingList();
+        NFTMarketplace.MarketItem[] memory usersSellingList = nftMarketplace.getSellingListBySeller(user);
+        NFTMarketplace.MarketItem[] memory usersNFTList = nftMarketplace.getNFTsByOwner(user);
+
+        assertEq(allSellingList.length, 2);
+        assertEq(usersSellingList.length, 2);
+        assertEq(usersNFTList.length, 0);
+    }
+
+    function testAllSellingListAfterSuccessfulPurchaseMarketItem() public createMarketItem createMarketItem {
+        vm.startPrank(buyer);
+        nftMarketplace.purchaseMarketItem{value: ITEM_PRICE}(0);
+        vm.stopPrank();
+
+        NFTMarketplace.MarketItem[] memory allSellingList = nftMarketplace.getAllSellingList();
+        NFTMarketplace.MarketItem[] memory usersSellingList = nftMarketplace.getSellingListBySeller(user);
+        NFTMarketplace.MarketItem[] memory usersNFTList = nftMarketplace.getNFTsByOwner(user);
+        NFTMarketplace.MarketItem[] memory buyersNFTList = nftMarketplace.getNFTsByOwner(buyer);
+
+        assertEq(allSellingList.length, 1);
+        assertEq(usersSellingList.length, 1);
+        assertEq(usersNFTList.length, 0);
+        assertEq(buyersNFTList.length, 1);
     }
 
     function testWithdraw() public createMarketItem {
